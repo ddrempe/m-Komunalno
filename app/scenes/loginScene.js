@@ -24,16 +24,16 @@ export default class LoginScene extends Component<{}> {
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.row}>
-          <View style={styles.icon}>
+      <View style={stylesContainer}>
+        <View style={stylesRow}>
+          <View style={stylesIcon}>
             <Icon
               size={20}
               name='user'
             />
           </View>
           <Input
-            style={{flex: 1}}
+            style={stylesInput}
             height={52}
             underlineColorAndroid='transparent'
             autoCapitalize='none'
@@ -42,15 +42,15 @@ export default class LoginScene extends Component<{}> {
             onChangeText={username => this.setState({username})}
           />
         </View>
-        <View style={styles.row}>
-            <View style={styles.icon}>
+        <View style={stylesRow}>
+            <View style={stylesIcon}>
               <Icon
                 size={20}
                 name='key'
               />
             </View>
           <Input
-            style={{flex: 1}}
+            style={stylesInput}
             height={52}
             underlineColorAndroid='transparent'
             secureTextEntry={true}
@@ -61,7 +61,7 @@ export default class LoginScene extends Component<{}> {
         </View>
         <View>
           <Button
-            style={{backgroundColor: '#70B5E5', height: 52}}
+            style={stylesButton}
             kind='squared'
             iconSize={20}
             iconPosition='left'
@@ -80,8 +80,8 @@ export default class LoginScene extends Component<{}> {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#E4E4E4',
-    flex: 1,
     justifyContent: 'center',
+    flex: 1,
     paddingRight: 12,
     paddingLeft: 12
   },
@@ -92,5 +92,18 @@ const styles = StyleSheet.create({
   },
   icon: {
     width: 24,
+  },
+  input: {
+    flex: 1
+  },
+  button: {
+    backgroundColor: '#70B5E5',
+    height: 52
   }
 });
+
+var stylesContainer = StyleSheet.flatten([styles.container]);
+var stylesRow = StyleSheet.flatten([styles.row]);
+var stylesIcon = StyleSheet.flatten([styles.icon]);
+var stylesInput = StyleSheet.flatten([styles.input]);
+var stylesButton = StyleSheet.flatten([styles.button]);
