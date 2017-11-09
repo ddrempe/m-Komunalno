@@ -5,7 +5,8 @@ import {
 } from 'react-native';
 import {
   Input,
-  Button
+  Button,
+  Spinner
 } from 'nachos-ui';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -17,11 +18,9 @@ export default class LoginScene extends Component<{}> {
       password: ''
     };
   }
-
   onSubmit() {
     //TODO
   }
-
   render() {
     return (
       <View style={stylesContainer}>
@@ -72,11 +71,13 @@ export default class LoginScene extends Component<{}> {
           >
           </Button>
         </View>
-      </View>
+        <View  style={stylesProgressBar}>
+          <Spinner color="#70B5E5"/>
+        </View>  
+        </View>
     );
   }
 }
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#E4E4E4',
@@ -99,11 +100,15 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#70B5E5',
     height: 52
+  },
+  progressBar: {
+    alignItems: 'center',
+    marginTop: 68
   }
 });
-
 var stylesContainer = StyleSheet.flatten([styles.container]);
 var stylesRow = StyleSheet.flatten([styles.row]);
 var stylesIcon = StyleSheet.flatten([styles.icon]);
 var stylesInput = StyleSheet.flatten([styles.input]);
 var stylesButton = StyleSheet.flatten([styles.button]);
+var stylesProgressBar = StyleSheet.flatten([styles.progressBar]);
