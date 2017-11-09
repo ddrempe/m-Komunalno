@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  View
+  View,
+  Alert,
+  NetInfo
 } from 'react-native';
 import {
   Input,
@@ -20,6 +22,19 @@ export default class LoginScene extends Component<{}> {
 
   onSubmit() {
     //TODO
+    console.log('LOG 1');
+
+    NetInfo.isConnected.fetch().then(isConnected => {
+      console.log('LOG 2');
+      if(!isConnected){        
+        Alert.alert(
+          'Pogreška u komunikaciji sa poslužiteljem', 
+          'Provjera nije moguća, molimo provjerite internetsku vezu.', 
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') }
+          ]);
+      } 
+    });
   }
 
   render() {
