@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  View
+  View,
+  Alert
 } from 'react-native';
 import {
   Input,
   Button
 } from 'nachos-ui';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import UserRequest from '../network/userRequest';
 
 export default class LoginScene extends Component<{}> {
   constructor(props) {
@@ -19,6 +21,18 @@ export default class LoginScene extends Component<{}> {
   }
 
   onSubmit() {
+    UserRequest.login(this.state.username, this.state.password)
+      .then(() => this.onLoginSuccess())
+      .catch((error) => this.onLoginFail(error));
+  }
+
+  onLoginSuccess() {
+    Alert.alert('Successs');
+    //TODO
+  }
+
+  onLoginFail(error) {
+    Alert.alert('Error');
     //TODO
   }
 
@@ -68,7 +82,7 @@ export default class LoginScene extends Component<{}> {
             iconName='md-log-in'
             uppercase={false}
             children='Prijavi se'
-            onPress = {this.onSubmit}
+            onPress = {this.onSubmit.bind(this)}
           >
           </Button>
         </View>
