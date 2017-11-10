@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  Alert
+  Alert,
+  NetInfo
 } from 'react-native';
 import {
   Input,
@@ -21,19 +22,50 @@ export default class LoginScene extends Component<{}> {
   }
 
   onSubmit() {
-    UserRequest.login(this.state.username, this.state.password)
-      .then(() => this.onLoginSuccess())
-      .catch((error) => this.onLoginFail(error));
+    
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if(isConnected){        
+        UserRequest.login(this.state.username, this.state.password)
+        .then(() => this.onLoginSuccess())
+        .catch((error) => this.onLoginFail(error));
+      } else {
+        Alert.alert(
+          'Pogreška u komunikaciji sa poslužiteljem!', 
+          'Provjera nije moguća, molimo provjerite internetsku vezu.', 
+          [
+            { text: 'U redu' }
+          ]
+        );
+      } 
+    });
   }
 
   onLoginSuccess() {
-    Alert.alert('Successs');
+    Alert.alert('Success');
     //TODO
   }
 
   onLoginFail(error) {
-    Alert.alert('Error');
-    //TODO
+    console.log(error);
+    //Ovo se trenutno događa zapravo sa pogrešnim korisničkim imenom ili lozinkom kod prijave
+    //Zasad nije jasan način razlikovanja odgovora od web servisa da li se dogodila greška
+    //prilikom provjere na serveru ili se radi o pogrešnim korisničkim podacima
+    //TODO - napraviti kada dobijemo pristup backendu
+    Alert.alert(
+      'Neuspješna prijava!', 
+      'Prijava nije moguća zbog tehničkih problema.', 
+      [
+        { text: 'U redu' }
+      ]
+    );
+
+    // Alert.alert(
+    //   'Neuspješna prijava!', 
+    //   'Neispravno korisničko ime i/ili lozinka', 
+    //   [
+    //     { text: 'U redu' }
+    //   ]
+    // );
   }
 
   render() {
