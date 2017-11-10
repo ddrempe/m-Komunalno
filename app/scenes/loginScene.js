@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  View
+  View,
+  Text
 } from 'react-native';
 import {
   Input,
@@ -10,7 +11,7 @@ import {
 } from 'nachos-ui';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-export default class LoginScene extends Component<{}> {
+export default class LoginScene extends Component <{}>{
   constructor(props) {
     super(props);
     this.state = {
@@ -18,8 +19,15 @@ export default class LoginScene extends Component<{}> {
       password: ''
     };
   }
-  onSubmit() {
-    //TODO
+  onSubmit= () => {
+    if(this.state.status == true)
+    {
+      this.setState({status: false})
+    }
+    else
+    {
+      this.setState({status: true})
+    }
   }
   render() {
     return (
@@ -71,8 +79,18 @@ export default class LoginScene extends Component<{}> {
           >
           </Button>
         </View>
-        <View  style={stylesProgressBar}>
-          <Spinner color="#70B5E5"/>
+        <View style={stylesProgressBar}>
+        {
+          this.state.status ? <Spinner color='#70B5E5'/> 
+          : null
+        }
+        <View style={stylesTextProgressBar}>
+        {
+          this.state.status ? 
+          <Text>Provjera podataka</Text>
+          : null
+        }
+          </View>
         </View>  
         </View>
     );
@@ -103,12 +121,20 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     alignItems: 'center',
-    marginTop: 68
+    marginTop: 68,
+    height: 52
+  },
+  textProgressBar:{
+    alignItems: 'center' ,
+    marginTop: 5,
+    height: 52
   }
 });
+
 var stylesContainer = StyleSheet.flatten([styles.container]);
 var stylesRow = StyleSheet.flatten([styles.row]);
 var stylesIcon = StyleSheet.flatten([styles.icon]);
 var stylesInput = StyleSheet.flatten([styles.input]);
 var stylesButton = StyleSheet.flatten([styles.button]);
 var stylesProgressBar = StyleSheet.flatten([styles.progressBar]);
+var stylesTextProgressBar = StyleSheet.flatten([styles.textProgressBar]);
