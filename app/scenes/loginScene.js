@@ -50,6 +50,7 @@ export default class LoginScene extends Component<{}> {
     //Ovo se trenutno događa zapravo sa pogrešnim korisničkim imenom ili lozinkom kod prijave
     //Zasad nije jasan način razlikovanja odgovora od web servisa da li se dogodila greška
     //prilikom provjere na serveru ili se radi o pogrešnim korisničkim podacima
+    //TODO - napraviti kada dobijemo pristup backendu
     Alert.alert(
       'Neuspješna prijava!', 
       'Prijava nije moguća zbog tehničkih problema.', 
