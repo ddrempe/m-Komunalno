@@ -2,16 +2,17 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  Text
+  Alert,
+  NetInfo
 } from 'react-native';
 import {
   Input,
-  Button,
-  Spinner
+  Button
 } from 'nachos-ui';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import UserRequest from '../network/userRequest';
 
-export default class LoginScene extends Component <{}>{
+export default class LoginScene extends Component<{}> {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,16 +20,54 @@ export default class LoginScene extends Component <{}>{
       password: ''
     };
   }
-  onSubmit= () => {
-    if(this.state.status == true)
-    {
-      this.setState({status: false})
-    }
-    else
-    {
-      this.setState({status: true})
-    }
+
+  onSubmit() {
+    
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if(isConnected){        
+        UserRequest.login(this.state.username, this.state.password)
+        .then(() => this.onLoginSuccess())
+        .catch((error) => this.onLoginFail(error));
+      } else {
+        Alert.alert(
+          'Pogreška u komunikaciji sa poslužiteljem!', 
+          'Provjera nije moguća, molimo provjerite internetsku vezu.', 
+          [
+            { text: 'U redu' }
+          ]
+        );
+      } 
+    });
   }
+
+  onLoginSuccess() {
+    Alert.alert('Success');
+    //TODO
+  }
+
+  onLoginFail(error) {
+    console.log(error);
+    //Ovo se trenutno događa zapravo sa pogrešnim korisničkim imenom ili lozinkom kod prijave
+    //Zasad nije jasan način razlikovanja odgovora od web servisa da li se dogodila greška
+    //prilikom provjere na serveru ili se radi o pogrešnim korisničkim podacima
+    //TODO - napraviti kada dobijemo pristup backendu
+    Alert.alert(
+      'Neuspješna prijava!', 
+      'Prijava nije moguća zbog tehničkih problema.', 
+      [
+        { text: 'U redu' }
+      ]
+    );
+
+    // Alert.alert(
+    //   'Neuspješna prijava!', 
+    //   'Neispravno korisničko ime i/ili lozinka', 
+    //   [
+    //     { text: 'U redu' }
+    //   ]
+    // );
+  }
+
   render() {
     return (
       <View style={stylesContainer}>
@@ -75,27 +114,15 @@ export default class LoginScene extends Component <{}>{
             iconName='md-log-in'
             uppercase={false}
             children='Prijavi se'
-            onPress = {this.onSubmit}
+            onPress = {this.onSubmit.bind(this)}
           >
           </Button>
         </View>
-        <View style={stylesProgressBar}>
-        {
-          this.state.status ? <Spinner color='#70B5E5'/> 
-          : null
-        }
-        <View style={stylesTextProgressBar}>
-        {
-          this.state.status ? 
-          <Text>Provjera podataka</Text>
-          : null
-        }
-          </View>
-        </View>  
-        </View>
+      </View>
     );
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#E4E4E4',
@@ -118,16 +145,6 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#70B5E5',
     height: 52
-  },
-  progressBar: {
-    alignItems: 'center',
-    marginTop: 68,
-    height: 52
-  },
-  textProgressBar:{
-    alignItems: 'center' ,
-    marginTop: 5,
-    height: 52
   }
 });
 
@@ -136,5 +153,3 @@ var stylesRow = StyleSheet.flatten([styles.row]);
 var stylesIcon = StyleSheet.flatten([styles.icon]);
 var stylesInput = StyleSheet.flatten([styles.input]);
 var stylesButton = StyleSheet.flatten([styles.button]);
-var stylesProgressBar = StyleSheet.flatten([styles.progressBar]);
-var stylesTextProgressBar = StyleSheet.flatten([styles.textProgressBar]);
