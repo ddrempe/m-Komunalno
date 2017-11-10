@@ -20,19 +20,30 @@ export default class LoginScene extends Component<{}> {
     };
   }
 
-  onSubmit() {
-    //TODO
-    console.log('LOG 1');
+  onSubmit=()=> {
+    this.checkNetworkConnection();
+  }
 
+  onLoginFail(error) {
+    Alert.alert(
+      'Pogreška u komunikaciji sa poslužiteljem!', 
+      'Prijava nije moguća zbog tehničkih problema.', 
+      [
+        { text: 'U redu' }
+      ]
+    );
+  }
+
+  checkNetworkConnection() {
     NetInfo.isConnected.fetch().then(isConnected => {
-      console.log('LOG 2');
       if(!isConnected){        
         Alert.alert(
-          'Pogreška u komunikaciji sa poslužiteljem', 
+          'Pogreška u komunikaciji sa poslužiteljem!', 
           'Provjera nije moguća, molimo provjerite internetsku vezu.', 
           [
-            { text: 'OK', onPress: () => console.log('OK Pressed') }
-          ]);
+            { text: 'U redu' }
+          ]
+        );
       } 
     });
   }
