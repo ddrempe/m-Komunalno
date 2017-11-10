@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  Alert,
-  NetInfo
+  Alert
 } from 'react-native';
 import {
   Input,
   Button
 } from 'nachos-ui';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import UserRequest from '../network/userRequest';
 
 export default class LoginScene extends Component<{}> {
   constructor(props) {
@@ -20,32 +20,20 @@ export default class LoginScene extends Component<{}> {
     };
   }
 
-  onSubmit=()=> {
-    this.checkNetworkConnection();
+  onSubmit() {
+    UserRequest.login(this.state.username, this.state.password)
+      .then(() => this.onLoginSuccess())
+      .catch((error) => this.onLoginFail(error));
+  }
+
+  onLoginSuccess() {
+    Alert.alert('Successs');
+    //TODO
   }
 
   onLoginFail(error) {
-    Alert.alert(
-      'Pogreška u komunikaciji sa poslužiteljem!', 
-      'Prijava nije moguća zbog tehničkih problema.', 
-      [
-        { text: 'U redu' }
-      ]
-    );
-  }
-
-  checkNetworkConnection() {
-    NetInfo.isConnected.fetch().then(isConnected => {
-      if(!isConnected){        
-        Alert.alert(
-          'Pogreška u komunikaciji sa poslužiteljem!', 
-          'Provjera nije moguća, molimo provjerite internetsku vezu.', 
-          [
-            { text: 'U redu' }
-          ]
-        );
-      } 
-    });
+    Alert.alert('Error');
+    //TODO
   }
 
   render() {
@@ -94,7 +82,7 @@ export default class LoginScene extends Component<{}> {
             iconName='md-log-in'
             uppercase={false}
             children='Prijavi se'
-            onPress = {this.onSubmit}
+            onPress = {this.onSubmit.bind(this)}
           >
           </Button>
         </View>
