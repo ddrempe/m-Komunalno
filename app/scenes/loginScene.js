@@ -3,11 +3,13 @@ import {
   StyleSheet,
   View,
   Alert,
-  NetInfo
+  NetInfo,
+  Text
 } from 'react-native';
 import {
   Input,
-  Button
+  Button,
+  Spinner
 } from 'nachos-ui';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import UserRequest from '../network/userRequest';
@@ -21,8 +23,15 @@ export default class LoginScene extends Component<{}> {
     };
   }
 
-  onSubmit() {
-    
+  onSubmit =() =>{
+      if(this.state.status == false)
+      {
+        this.setState({status: true})
+      }
+      else
+      {
+        this.setState({status: true})
+      }
     NetInfo.isConnected.fetch().then(isConnected => {
       if(isConnected){        
         UserRequest.login(this.state.username, this.state.password)
@@ -46,6 +55,7 @@ export default class LoginScene extends Component<{}> {
   }
 
   onLoginFail(error) {
+    this.setState({status: false})
     console.log(error);
     //Ovo se trenutno događa zapravo sa pogrešnim korisničkim imenom ili lozinkom kod prijave
     //Zasad nije jasan način razlikovanja odgovora od web servisa da li se dogodila greška
@@ -118,6 +128,17 @@ export default class LoginScene extends Component<{}> {
           >
           </Button>
         </View>
+        <View style={stylesProgressBar}>
+            {
+            this.state.status ? <Spinner color='#70B5E5'/> : null
+            }
+          <View style={stylesTextProgressBar}>
+            {
+            this.state.status ? 
+            <Text>Provjera podataka</Text> : null
+            }
+          </View>
+        </View>  
       </View>
     );
   }
@@ -145,6 +166,16 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#70B5E5',
     height: 52
+  },
+  progressBar: {
+    alignItems: 'center',
+    marginTop: 68,
+    height: 52
+  },
+  textProgressBar:{
+    alignItems: 'center' ,
+    marginTop: 5,
+    height: 52
   }
 });
 
@@ -153,3 +184,5 @@ var stylesRow = StyleSheet.flatten([styles.row]);
 var stylesIcon = StyleSheet.flatten([styles.icon]);
 var stylesInput = StyleSheet.flatten([styles.input]);
 var stylesButton = StyleSheet.flatten([styles.button]);
+var stylesProgressBar = StyleSheet.flatten([styles.progressBar]);
+var stylesTextProgressBar = StyleSheet.flatten([styles.textProgressBar]);
