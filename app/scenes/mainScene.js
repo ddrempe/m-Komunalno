@@ -10,6 +10,7 @@ import {
   Dimensions,
   Alert
 } from 'react-native';
+import UserRequest from '../network/userRequest';
 
 export default class MainScene extends Component<{}> {
   constructor(props) {
@@ -17,16 +18,16 @@ export default class MainScene extends Component<{}> {
     this.state = {
       view: 'Grid View',
       columns: 2,
-      key: 1
+      key: 1,
+      tiles: []
     };
   }
 
   onToggle() {
     if (this.state.columns != 2) {
-      this.setState({view: 'Grid View', columns: 2, key: 1})
-    }
-    else {
-      this.setState({view: 'List View', columns: 1, key: 2})
+      this.setState({view: 'Grid View', columns: 2, key: 1});
+    } else {
+      this.setState({view: 'List View', columns: 1, key: 2});
     };
   }
 
@@ -35,31 +36,26 @@ export default class MainScene extends Component<{}> {
     //TODO: change scene on click
   }
 
-  render() {
-    //TODO: tiles data needs to be pulled from web API
-    var tiles = [
-      { id: 1, title: 'Title 1', description: 'Description 1', image: require('../images/default-settings.png') },
-      { id: 2, title: 'Title 2', description: 'Description 2', image: require('../images/default-settings.png') },
-      { id: 3, title: 'Title 3', description: 'Description 3', image: require('../images/default-settings.png') },
-      { id: 4, title: 'Title 4', description: 'Description 4', image: require('../images/default-settings.png') },
-      { id: 5, title: 'Title 5', description: 'Description 5', image: require('../images/default-settings.png') },
-      { id: 6, title: 'Title 6', description: 'Description 6', image: require('../images/default-settings.png') },
-      { id: 7, title: 'Title 7', description: 'Description 7', image: require('../images/default-settings.png') }
-    ];
+  componentDidMount() {
+    UserRequest.fetchTiles()
+      .then((response) => this.setState({tiles: response}));
+  }
 
+  render() {
     return (
       <View style={stylesContainer}>
         <Button
           color='#70B5E5'
           title={this.state.view}
-          onPress = {this.onToggle.bind(this)}
+          onPress={this.onToggle.bind(this)}
         >
         </Button>
         <FlatList
           contentContainerStyle={stylesFlatList}
           key={this.state.key}
           numColumns={this.state.columns}
-          data={tiles}
+          data={this.state.tiles}
+          keyExtractor={(item, index) => (item.Id)}
           renderItem={({item}) => (
             <TouchableHighlight
               underlayColor='black'
@@ -69,17 +65,16 @@ export default class MainScene extends Component<{}> {
                 <View style={{alignItems: 'center'}}>
                   <Image
                     style={stylesImage}
-                    source={item.image}
+                    source={item.IconUrl}
                   />
                 </View>
                 <View style={this.state.key != 2 ? stylesTextGrid : stylesTextList}>
-                  <Text style={stylesTitle}>{item.title}</Text>
-                  <Text style={stylesSubtitle}>{item.description}</Text>
+                  <Text style={stylesTitle}>{item.Name}</Text>
+                  <Text style={stylesDescription}>{item.Description}</Text>
                 </View>
               </View>
             </TouchableHighlight>
           )}
-          keyExtractor={(item, index) => (item.id)}
         />
       </View>
     );
@@ -106,7 +101,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     margin: 2,
     padding: 10
-    
   },
   image: {
     height: 72,
@@ -123,7 +117,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold'
   },
-  subtitle: {
+  description: {
     paddingTop: 10
   }
 });
@@ -136,4 +130,4 @@ var stylesImage = StyleSheet.flatten([styles.image]);
 var stylesTextGrid = StyleSheet.flatten([styles.textGrid]);
 var stylesTextList = StyleSheet.flatten([styles.textList]);
 var stylesTitle = StyleSheet.flatten([styles.title]);
-var stylesSubtitle = StyleSheet.flatten([styles.subtitle]);
+var stylesDescription = StyleSheet.flatten([styles.description]);

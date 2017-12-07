@@ -5,6 +5,7 @@ import {
 require('./const');
 
 var KEY_AUTH_HEADER = 'AUTH_HEADER';
+var KEY_IS_ADMIN = '0';
 
 class Settings {
     async getValue(key) {
@@ -21,6 +22,11 @@ class Settings {
         return value;
     }
 
+    async getIsAdmin() {
+        var value = await this.getValue(KEY_IS_ADMIN);
+        return value;
+    }
+
     async setValue(key, value) {
         try {
             await AsyncStorage.setItem(key, value);
@@ -32,6 +38,10 @@ class Settings {
 
     setAuthHeader(value) {
         return this.setValue(KEY_AUTH_HEADER, value);
+    }
+
+    setIsAdmin(value) {
+        return this.setValue(KEY_IS_ADMIN, value);
     }
 }
 
