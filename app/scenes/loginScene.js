@@ -4,7 +4,8 @@ import {
   View,
   Alert,
   NetInfo,
-  Text
+  Text,
+  Keyboard
 } from 'react-native';
 import {
   Input,
@@ -13,68 +14,66 @@ import {
 } from 'nachos-ui';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import UserRequest from '../network/userRequest';
+import BaseScene from './baseScene';
 
-export default class LoginScene extends Component<{}> {
+export default class LoginScene extends BaseScene<{}> {
   constructor(props) {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      state: false
     };
   }
 
-  onSubmit =() =>{
-      if(this.state.status == false)
-      {
-        this.setState({status: true})
-      }
-      else
-      {
-        this.setState({status: true})
-      }
-    NetInfo.isConnected.fetch().then(isConnected => {
-      if(isConnected){        
+  onSubmit = () => {
+    if (!this.state.status) {
+      this.setState({status: true});
+    };
+    NetInfo.isConnected.fetch().then((isConnected) => {
+      if (isConnected) {
         UserRequest.login(this.state.username, this.state.password)
-        .then(() => this.onLoginSuccess())
-        .catch((error) => this.onLoginFail(error));
+          .then(() => this.onLoginSuccess())
+          .catch((error) => this.onLoginFail(error));
       } else {
         Alert.alert(
-          'Pogreška u komunikaciji sa poslužiteljem!', 
-          'Provjera nije moguća, molimo provjerite internetsku vezu.', 
-          [
-            { text: 'U redu' }
-          ]
+          'Pogreška u komunikaciji sa poslužiteljem!',
+          'Provjera nije moguća, molimo provjerite internetsku vezu.',
+          [{ text: 'U redu' }]
         );
-      } 
+      };
     });
   }
 
   onLoginSuccess() {
-    Alert.alert('Success');
-    //TODO
+    if (this.state.status) {
+      this.setState({status: false});
+    };
+    Keyboard.dismiss();
+    this.goto('MainScene');
   }
 
   onLoginFail(error) {
-    this.setState({status: false})
-    console.log(error);
+    if (this.state.status) {
+      this.setState({status: false});
+    };
+
+    //console.log(error);
     //Ovo se trenutno događa zapravo sa pogrešnim korisničkim imenom ili lozinkom kod prijave
     //Zasad nije jasan način razlikovanja odgovora od web servisa da li se dogodila greška
     //prilikom provjere na serveru ili se radi o pogrešnim korisničkim podacima
     //TODO - napraviti kada dobijemo pristup backendu
+
     Alert.alert(
-      'Neuspješna prijava!', 
-      'Prijava nije moguća zbog tehničkih problema.', 
-      [
-        { text: 'U redu' }
-      ]
+      'Neuspješna prijava!',
+      'Prijava nije moguća zbog tehničkih problema.',
+      [{ text: 'U redu' }]
     );
 
     // Alert.alert(
     //   'Neuspješna prijava!', 
     //   'Neispravno korisničko ime i/ili lozinka', 
-    //   [
-    //     { text: 'U redu' }
-    //   ]
+    //   [{ text: 'U redu' }]
     // );
   }
 
@@ -124,21 +123,16 @@ export default class LoginScene extends Component<{}> {
             iconName='md-log-in'
             uppercase={false}
             children='Prijavi se'
-            onPress = {this.onSubmit.bind(this)}
+            onPress={this.onSubmit.bind(this)}
           >
           </Button>
         </View>
         <View style={stylesProgressBar}>
-            {
-            this.state.status ? <Spinner color='#70B5E5'/> : null
-            }
+          { this.state.status ? <Spinner color='#70B5E5'/> : null }
           <View style={stylesTextProgressBar}>
-            {
-            this.state.status ? 
-            <Text>Provjera podataka</Text> : null
-            }
+            { this.state.status ? <Text>Provjera podataka</Text> : null } 
           </View>
-        </View>  
+        </View>
       </View>
     );
   }
@@ -172,10 +166,8 @@ const styles = StyleSheet.create({
     marginTop: 68,
     height: 52
   },
-  textProgressBar:{
-    alignItems: 'center' ,
-    marginTop: 5,
-    height: 52
+  textProgressBar: {
+    marginTop: 8
   }
 });
 

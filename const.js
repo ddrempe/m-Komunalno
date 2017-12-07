@@ -10,8 +10,14 @@
 //    PORTAL_URL: 'http://192.168.2.60/voddu'
 //};
 
+// global.settings = {
+//    APP_NAME: 'voddu',
+//    API_URL: 'http://www.hpdoc.hr/voddu/api/v1',
+//    PORTAL_URL: 'http://www.hpdoc.hr/voddu'
+// };
+
 global.settings = {
     APP_NAME: 'voddu',
-    API_URL: 'http://www.hpdoc.hr/voddu/api/v1',
-    PORTAL_URL: 'http://www.hpdoc.hr/voddu'
+    API_URL: 'http://192.168.1.7:62148/api/v1',
+    PORTAL_URL: 'http://192.168.1.7:62148'
 };
