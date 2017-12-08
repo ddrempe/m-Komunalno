@@ -27,4 +27,11 @@ export default class BaseRequest {
         let response = await this.fetch(options, path);
         return response;
     }
+
+    async getRaw(options, path) {
+        options.method = 'GET';
+
+        let response = await this.fetch(options, path);
+        return response;
+    }
 }

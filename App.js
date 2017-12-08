@@ -19,7 +19,7 @@ const AppNavigator = StackNavigator(
     LoginScene: { screen: LoginScene }
   },
   {
-    initialRouteName: 'MainScene',
+    initialRouteName: 'LoginScene',
     headerMode: 'none'
   }
 );
