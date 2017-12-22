@@ -7,6 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "moment": "^2.20.1",
     "nachos-ui": "^0.1.2",
     "react": "16.0.0-beta.5",
     "react-native": "0.49.5",

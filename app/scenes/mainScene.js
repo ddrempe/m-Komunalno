@@ -10,9 +10,10 @@ import {
   Dimensions,
   Alert
 } from 'react-native';
+import BaseScene from './baseScene';
 import UserRequest from '../network/userRequest';
 
-export default class MainScene extends Component<{}> {
+export default class MainScene extends BaseScene<{}> {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,7 +33,8 @@ export default class MainScene extends Component<{}> {
   }
 
   onTileClick() {
-    Alert.alert('Tile Click');
+    this.goto('InvoicesScene');
+    
     //TODO: change scene on click
   }
 
@@ -59,7 +61,7 @@ export default class MainScene extends Component<{}> {
           renderItem={({item}) => (
             <TouchableHighlight
               underlayColor='black'
-              onPress={this.onTileClick}
+              onPress={this.onTileClick.bind(this)}
             >
               <View style={this.state.key != 2 ? stylesTileGrid : stylesTileList}>
                 <View style={{alignItems: 'center'}}>
