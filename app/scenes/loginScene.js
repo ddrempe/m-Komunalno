@@ -13,6 +13,7 @@ import {
   Spinner
 } from 'nachos-ui';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Settings from '../../settings';
 import UserRequest from '../network/userRequest';
 import BaseScene from './baseScene';
 
@@ -50,6 +51,10 @@ export default class LoginScene extends BaseScene<{}> {
       this.setState({status: false});
     };
     Keyboard.dismiss();
+    Settings.fetchAll(this.onSettingsLoad.bind(this));
+  }
+
+  onSettingsLoad() {
     this.goto('MainScene');
   }
 

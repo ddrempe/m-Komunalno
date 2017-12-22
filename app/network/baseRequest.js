@@ -6,14 +6,14 @@ export default class BaseRequest {
 
         if (!options.headers) {
             options.headers = {};
-        }
+        };
         options.headers['Cache-Control'] = 'no-cache';
         options.headers['Accept'] = 'application/json';
         options.headers['Content-Type'] = 'application/json';
         options.headers['Cookie'] = '.ASPXAUTH=' + authHeader;
         if (options.body) {
             options.body = JSON.stringify(options.body);
-        }
+        };
 
         var url = global.settings.API_URL + path;
 
@@ -33,5 +33,16 @@ export default class BaseRequest {
 
         let response = await this.fetch(options, path);
         return response;
+    }
+
+    async get(options, path) {
+        let rawResponse = await this.getRaw(options, path);
+
+        if (rawResponse.ok) {
+            let body = await rawResponse.json();
+            return body;
+        } else {
+            return null;
+        };
     }
 }

@@ -1,13 +1,48 @@
 import {
     AsyncStorage
 } from 'react-native';
+import userRequest from './app/network/userRequest';
 
 require('./const');
 
 var KEY_AUTH_HEADER = 'AUTH_HEADER';
-var KEY_IS_ADMIN = '0';
 
 class Settings {
+    async fetchAll(callback, callbackError) {
+        try {
+            await this.fetchSettings();
+            await this.fetchUser();
+            callback(this.connnectedUser);
+        } catch (error) {
+            callbackError(error);
+        };
+    }
+
+    async fetchSettings() {
+        let response = await fetch(this.getApiUrl + '/options/get');
+        let body = await response.json();
+
+        global.texts = body.Texts;
+        global.dynamicData = body.DynamicData;
+    }
+
+    get getApiUrl() {
+        return global.settings.API_URL;
+    }
+
+    async fetchUser() {
+        let connectedUser = await userRequest.fetchConnectedUser();
+        this.setConnectedUser(connectedUser);
+    }
+
+    getConnectedUser() {
+        return this.connectedUser;
+    }
+
+    setConnectedUser(user) {
+        this.connectedUser = user;
+    }
+
     async getValue(key) {
         try {
             var value = await AsyncStorage.getItem(key);
@@ -22,11 +57,6 @@ class Settings {
         return value;
     }
 
-    async getIsAdmin() {
-        var value = await this.getValue(KEY_IS_ADMIN);
-        return value;
-    }
-
     async setValue(key, value) {
         try {
             await AsyncStorage.setItem(key, value);
@@ -38,10 +68,6 @@ class Settings {
 
     setAuthHeader(value) {
         return this.setValue(KEY_AUTH_HEADER, value);
-    }
-
-    setIsAdmin(value) {
-        return this.setValue(KEY_IS_ADMIN, value);
     }
 }
 
