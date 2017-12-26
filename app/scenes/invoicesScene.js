@@ -5,6 +5,7 @@ import {
   FlatList,
   TouchableHighlight,
   Text,
+  Picker,
   Alert
 } from 'react-native';
 import Moment from 'moment';
@@ -15,6 +16,7 @@ export default class InvoicesScene extends BaseScene<{}> {
   constructor(props) {
     super(props);
     this.state = {
+      invoiceSelected: '',
       invoices: []
     };
   }
@@ -33,6 +35,16 @@ export default class InvoicesScene extends BaseScene<{}> {
   render() {
     return (
       <View style={stylesContainer}>
+        <Picker
+          mode='dialog'
+          selectedValue={this.state.invoiceSelected}
+          onValueChange={(itemValue, itemIndex) => this.setState({invoiceSelected: itemValue})}
+        >
+          <Picker.Item label='Sve' value='0'/>
+          <Picker.Item label='Voda' value='1'/>
+          <Picker.Item label='Struja' value='2'/>
+          <Picker.Item label='Plin' value='3'/>
+        </Picker>
         <FlatList
           contentContainerStyle={stylesFlatList}
           numColumns={1}
