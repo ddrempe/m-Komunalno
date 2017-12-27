@@ -12,55 +12,57 @@ import {
 import Moment from 'moment';
 import BaseScene from './baseScene';
 import InvoicesRequest from '../network/invoicesRequest';
+import InvoiceTypesRequest from '../network/invoiceTypesRequest';
 
 export default class InvoicesScene extends BaseScene<{}> {
   constructor(props) {
     super(props);
     this.state = {
-      invoiceSelected: '',
-      invoices: []
+      invoiceTypeSelected: '',
+      invoices: [],
+      invoiceTypes: []
     };
   }
   getImageRequire(period) {
 
     if(period =='01') {
-        return require('./../../icons/sijecanj.png');
+      return require('./../../icons/sijecanj.png');
     }
     else if(period == '02') {
       return require('./../../icons/veljaca.png');
     }
     else if(period == '03') {
-    return require('./../../icons/ozujak.png');
+      return require('./../../icons/ozujak.png');
     }
     else if(period == '04') {
-    return require('./../../icons/travanj.png');
+      return require('./../../icons/travanj.png');
     }
     else if(period == '05') {
-    return require('./../../icons/svibanj.png');
+      return require('./../../icons/svibanj.png');
     }
     else if(period == '06') {
-    return require('./../../icons/lipanj.png');
+      return require('./../../icons/lipanj.png');
     }
     else if(period == '07') {
-    return require('./../../icons/srpanj.png');
+      return require('./../../icons/srpanj.png');
     }
     else if(period == '08') {
-        return require('./../../icons/kolovoz.png');
+      return require('./../../icons/kolovoz.png');
     }
     else if(period == '09') {
-    return require('./../../icons/rujan.png');
+      return require('./../../icons/rujan.png');
     }
     else if(period == '10') {
-    return require('./../../icons/listopad.png');
+      return require('./../../icons/listopad.png');
     }
     else if(period == '11') {
-    return require('./../../icons/studeni.png');
+      return require('./../../icons/studeni.png');
     }
     else if(period == '12') {
-    return require('./../../icons/prosinac.png');
+      return require('./../../icons/prosinac.png');
     }
     else {
-        return require('./../../icons/sijecanj.png');
+      return require('./../../icons/sijecanj.png');
     }
 }
   onInvoiceClick() {
@@ -72,6 +74,9 @@ export default class InvoicesScene extends BaseScene<{}> {
   componentDidMount() {
     InvoicesRequest.getAllInvoices()
       .then((response) => this.setState({invoices: response}));
+    
+    InvoiceTypesRequest.getAllInvoiceTypes()
+      .then((response) => this.setState({invoiceTypes: response})); // TODO: trenutno se ne koristi, jer nije bilo moguće picker popuniti tim vrijednostima
   }
 
   render() {
@@ -79,13 +84,12 @@ export default class InvoicesScene extends BaseScene<{}> {
       <View style={stylesContainer}>
         <Picker
           mode='dialog'
-          selectedValue={this.state.invoiceSelected}
-          onValueChange={(itemValue, itemIndex) => this.setState({invoiceSelected: itemValue})}
+          selectedValue={this.state.invoiceTypeSelected}
+          onValueChange={(itemValue, itemIndex) => this.setState({invoiceTypeSelected: itemValue})}
         >
-          <Picker.Item label='Sve' value='0'/>
-          <Picker.Item label='Voda' value='1'/>
-          <Picker.Item label='Struja' value='2'/>
-          <Picker.Item label='Plin' value='3'/>
+          <Picker.Item label='Svi dokumenti' value='0'/>
+          <Picker.Item label='Računi vodovoda' value='1'/>
+          <Picker.Item label='Računi čistoće' value='2'/>
         </Picker>
         <FlatList
           contentContainerStyle={stylesFlatList}
