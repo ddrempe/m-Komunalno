@@ -6,7 +6,8 @@ import {
   TouchableHighlight,
   Text,
   Picker,
-  Alert
+  Alert,
+  Image
 } from 'react-native';
 import Moment from 'moment';
 import BaseScene from './baseScene';
@@ -20,7 +21,48 @@ export default class InvoicesScene extends BaseScene<{}> {
       invoices: []
     };
   }
+  getImageRequire(period) {
 
+    if(period =='01') {
+        return require('./../../icons/sijecanj.png');
+    }
+    else if(period == '02') {
+      return require('./../../icons/veljaca.png');
+    }
+    else if(period == '03') {
+    return require('./../../icons/ozujak.png');
+    }
+    else if(period == '04') {
+    return require('./../../icons/travanj.png');
+    }
+    else if(period == '05') {
+    return require('./../../icons/svibanj.png');
+    }
+    else if(period == '06') {
+    return require('./../../icons/lipanj.png');
+    }
+    else if(period == '07') {
+    return require('./../../icons/srpanj.png');
+    }
+    else if(period == '08') {
+        return require('./../../icons/kolovoz.png');
+    }
+    else if(period == '09') {
+    return require('./../../icons/rujan.png');
+    }
+    else if(period == '10') {
+    return require('./../../icons/listopad.png');
+    }
+    else if(period == '11') {
+    return require('./../../icons/studeni.png');
+    }
+    else if(period == '12') {
+    return require('./../../icons/prosinac.png');
+    }
+    else {
+        return require('./../../icons/sijecanj.png');
+    }
+}
   onInvoiceClick() {
     Alert.alert('Invoice Click');
     
@@ -56,6 +98,9 @@ export default class InvoicesScene extends BaseScene<{}> {
               onPress={this.onInvoiceClick.bind(this)}
             >
               <View style={stylesTileList}>
+              <Image
+                    style={stylesImage}
+                    source={this.getImageRequire(item.Month)} />
                 <Text style={stylesTitle}>Račun: {item.InvoiceNumber}</Text>
                 <View style={stylesDetails}>
                   <Text style={stylesInfo}>{item.Amount}kn</Text>
@@ -87,17 +132,21 @@ const styles = StyleSheet.create({
   title: {
     color: '#000000',
     fontFamily: 'Rubik',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   details: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingTop: 10
   },
   info: {
     color: 'gray',
     fontSize: 10,
     fontFamily: 'Rubik'
+  },
+  image: {
+    flexDirection: 'row',
+    height: 40,
+    width: 40
   }
 });
 
@@ -107,3 +156,4 @@ var stylesTileList = StyleSheet.flatten([styles.tileList]);
 var stylesTitle = StyleSheet.flatten([styles.title]);
 var stylesDetails = StyleSheet.flatten([styles.details]);
 var stylesInfo = StyleSheet.flatten([styles.info]);
+var stylesImage = StyleSheet.flatten([styles.image]);
