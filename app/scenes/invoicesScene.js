@@ -18,7 +18,7 @@ export default class InvoicesScene extends BaseScene<{}> {
   constructor(props) {
     super(props);
     this.state = {
-      invoiceTypeSelected: '',
+      invoiceTypeSelected: '0',
       invoices: [],
       invoiceTypes: []
     };
@@ -64,7 +64,15 @@ export default class InvoicesScene extends BaseScene<{}> {
     else {
       return require('./../../icons/sijecanj.png');
     }
-}
+  }
+
+  updateInvoiceTypeSelected = (newInvoiceTypeSelected) => {
+    this.setState({ invoiceTypeSelected: newInvoiceTypeSelected });
+    console.log(newInvoiceTypeSelected);
+
+    //TODO: add recalling api and rerendering
+  }
+
   onInvoiceClick() {
     Alert.alert('Invoice Click');
     
@@ -72,7 +80,7 @@ export default class InvoicesScene extends BaseScene<{}> {
   }
 
   componentDidMount() {
-    InvoicesRequest.getAllInvoices()
+    InvoicesRequest.getInvoicesByType(this.state.invoiceTypeSelected)
       .then((response) => this.setState({invoices: response}));
     
     InvoiceTypesRequest.getAllInvoiceTypes()
@@ -85,7 +93,7 @@ export default class InvoicesScene extends BaseScene<{}> {
         <Picker
           mode='dialog'
           selectedValue={this.state.invoiceTypeSelected}
-          onValueChange={(itemValue, itemIndex) => this.setState({invoiceTypeSelected: itemValue})}
+          onValueChange={this.updateInvoiceTypeSelected}
         >
           <Picker.Item label='Svi dokumenti' value='0'/>
           <Picker.Item label='Računi vodovoda' value='1'/>

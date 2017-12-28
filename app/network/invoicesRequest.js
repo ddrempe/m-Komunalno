@@ -9,6 +9,14 @@ class InvoicesRequest extends BaseRequest {
 
         return this.get(options, path);
     }
+
+    getInvoicesByType(invoiceTypeId) {
+        var options = {};
+
+        var path = '/invoices/' + Settings.getConnectedUser().Id + '/' + invoiceTypeId;
+
+        return this.get(options, path);
+    }
 }
 
 let invoicesRequest = new InvoicesRequest();
