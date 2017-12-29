@@ -68,9 +68,9 @@ export default class InvoicesScene extends BaseScene<{}> {
 
   updateInvoiceTypeSelected = (newInvoiceTypeSelected) => {
     this.setState({ invoiceTypeSelected: newInvoiceTypeSelected });
-    console.log(newInvoiceTypeSelected);
 
-    //TODO: add recalling api and rerendering
+    InvoicesRequest.getInvoicesByType(newInvoiceTypeSelected)
+      .then((response) => this.setState({invoices: response}));
   }
 
   onInvoiceClick() {
