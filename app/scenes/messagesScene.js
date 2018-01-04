@@ -1,0 +1,100 @@
+import React, { Component } from 'react';
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  TouchableHighlight,
+  Text,
+  Alert
+} from 'react-native';
+import BaseScene from './baseScene';
+import Moment from 'moment';
+
+export default class MessagesScene extends BaseScene<{}> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      messages: [
+        {
+          'Id':0,
+          'MessageId':58,
+          'UserId':0,
+          'Subject':'Subject',
+          'Text':'text',
+          'Created':'2017-05-29T14:07:19.757+02:00',
+          'ReadDate':null
+        }
+      ]
+    };
+  }
+
+  onMessageClick(item) {
+    Alert.alert('Item', JSON.stringify(item));
+  }
+
+  render() {
+    return (
+      <View style={stylesContainer}>
+        <FlatList
+          contentContainerStyle={stylesFlatList}
+          numColumns={1}
+          data={this.state.messages}
+          keyExtractor={(item, index) => (item.Id)}
+          renderItem={({item}) => (
+            <TouchableHighlight
+              underlayColor='black'
+              onPress={() => this.onMessageClick(item)}
+            >
+              <View style={stylesTileList}>
+                <Text style={stylesDateCreated}>{Moment(item.Created).format('DD.MM.YYYY.')}</Text>
+                <View style={stylesSubject}>
+                  <Text style={stylesSubjectText}>{item.Subject}</Text>
+                </View>
+                <Text style={stylesDateFrom}>{Moment(item.Created).startOf('day').fromNow()}</Text>
+              </View>
+            </TouchableHighlight>
+          )}
+        />
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#E4E4E4',
+    flex: 1
+  },
+  flatList: {
+    margin: 2
+  },
+  tileList: {
+    backgroundColor: '#FFFFFF',
+    margin: 2,
+    padding: 10
+  },
+  subject: {
+    alignItems: 'center'
+  },
+  dateCreated: {
+    fontFamily: 'Rubik'
+  },
+  subjectText: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: '#000000',
+    fontFamily: 'Rubik',
+    fontSize: 16
+  },
+  dateFrom: {
+    fontFamily: 'Rubik'
+  }
+});
+
+var stylesContainer = StyleSheet.flatten([styles.container]);
+var stylesFlatList = StyleSheet.flatten([styles.flatList]);
+var stylesTileList = StyleSheet.flatten([styles.tileList]);
+var stylesSubject = StyleSheet.flatten([styles.subject]);
+var stylesDateCreated = StyleSheet.flatten([styles.dateCreated]);
+var stylesSubjectText = StyleSheet.flatten([styles.subjectText]);
+var stylesDateFrom = StyleSheet.flatten([styles.dateFrom]);

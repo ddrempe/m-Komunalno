@@ -6,6 +6,7 @@ import SplashScene from './app/scenes/splashScene';
 import MainScene from './app/scenes/mainScene';
 import LoginScene from './app/scenes/loginScene';
 import InvoicesScene from './app/scenes/invoicesScene';
+import MessagesScene from './app/scenes/messagesScene';
 
 export default class App extends Component<{}> {
   render() {
@@ -21,6 +22,7 @@ const AppNavigator = StackNavigator(
     MainScene: { screen: MainScene },
     LoginScene: { screen: LoginScene },
     InvoicesScene: { screen: InvoicesScene },
+    MessagesScene: { screen: MessagesScene }
   },
   {
     initialRouteName: 'SplashScene',
