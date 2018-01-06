@@ -7,29 +7,26 @@ import {
   Text,
   Alert
 } from 'react-native';
+import Ionicons from "react-native-vector-icons/Ionicons";
 import BaseScene from './baseScene';
 import Moment from 'moment';
+import MessagesRequest from '../network/messagesRequest';
 
 export default class MessagesScene extends BaseScene<{}> {
   constructor(props) {
     super(props);
     this.state = {
-      messages: [
-        {
-          'Id':0,
-          'MessageId':58,
-          'UserId':0,
-          'Subject':'Subject',
-          'Text':'text',
-          'Created':'2017-05-29T14:07:19.757+02:00',
-          'ReadDate':null
-        }
-      ]
+      messages: []
     };
   }
 
   onMessageClick(item) {
     Alert.alert('Item', JSON.stringify(item));
+  }
+
+  componentDidMount() {
+    MessagesRequest.getAllMessages()
+      .then((response) => this.setState({messages: response}));
   }
 
   render() {
@@ -45,12 +42,19 @@ export default class MessagesScene extends BaseScene<{}> {
               underlayColor='black'
               onPress={() => this.onMessageClick(item)}
             >
-              <View style={stylesTileList}>
+              <View style={item.ReadDate ? stylesTileListRead : stylesTileList}>
                 <Text style={stylesDateCreated}>{Moment(item.Created).format('DD.MM.YYYY.')}</Text>
                 <View style={stylesSubject}>
-                  <Text style={stylesSubjectText}>{item.Subject}</Text>
+                  <Text style={item.ReadDate ? stylesSubjectTextRead : stylesSubjectText}>{item.Subject}</Text>
                 </View>
-                <Text style={stylesDateFrom}>{Moment(item.Created).startOf('day').fromNow()}</Text>
+                <View style={stylesFooter}>
+                  <Text style={stylesDateFrom}>{Moment(item.Created).startOf('day').fromNow()}</Text>
+                  <Ionicons
+                    size={20}
+                    name={item.ReadDate ? 'md-mail-open' : 'md-mail'}
+                  >
+                  </Ionicons>
+                </View>
               </View>
             </TouchableHighlight>
           )}
@@ -73,18 +77,37 @@ const styles = StyleSheet.create({
     margin: 2,
     padding: 10
   },
-  subject: {
-    alignItems: 'center'
+  tileListRead: {
+    backgroundColor: '#D6DBE0',
+    margin: 2,
+    padding: 10
   },
   dateCreated: {
     fontFamily: 'Rubik'
+  },
+  subject: {
+    alignItems: 'center'
   },
   subjectText: {
     paddingTop: 10,
     paddingBottom: 10,
     color: '#000000',
     fontFamily: 'Rubik',
-    fontSize: 16
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  subjectTextRead: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: '#000000',
+    fontFamily: 'Rubik',
+    fontSize: 16,
+    textAlign: 'center'
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   dateFrom: {
     fontFamily: 'Rubik'
@@ -94,7 +117,10 @@ const styles = StyleSheet.create({
 var stylesContainer = StyleSheet.flatten([styles.container]);
 var stylesFlatList = StyleSheet.flatten([styles.flatList]);
 var stylesTileList = StyleSheet.flatten([styles.tileList]);
+var stylesTileListRead = StyleSheet.flatten([styles.tileListRead]);
 var stylesSubject = StyleSheet.flatten([styles.subject]);
 var stylesDateCreated = StyleSheet.flatten([styles.dateCreated]);
 var stylesSubjectText = StyleSheet.flatten([styles.subjectText]);
+var stylesSubjectTextRead = StyleSheet.flatten([styles.subjectTextRead]);
+var stylesFooter = StyleSheet.flatten([styles.footer]);
 var stylesDateFrom = StyleSheet.flatten([styles.dateFrom]);

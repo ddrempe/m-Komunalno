@@ -18,6 +18,6 @@
 
 global.settings = {
     APP_NAME: 'voddu',
-    API_URL: 'http://192.168.1.8:62148/api/v1',
-    PORTAL_URL: 'http://192.168.1.8:62148'
+    API_URL: 'http://192.168.1.2:62148/api/v1',
+    PORTAL_URL: 'http://192.168.1.2:62148'
 };
