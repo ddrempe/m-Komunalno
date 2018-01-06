@@ -9,6 +9,14 @@ class MessagesRequest extends BaseRequest {
 
         return this.get(options, path);
     }
+
+    updateMessageReadDate(messageId) {
+        var options = {};
+
+        var path = '/users/' + Settings.getConnectedUser().Id + '/usermessages/' + messageId;
+
+        return this.get(options, path);
+    }
 }
 
 let messagesRequest = new MessagesRequest();

@@ -5,7 +5,9 @@ import {
   FlatList,
   TouchableHighlight,
   Text,
-  Alert
+  Alert,
+  Modal,
+  Button
 } from 'react-native';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import BaseScene from './baseScene';
@@ -16,12 +18,25 @@ export default class MessagesScene extends BaseScene<{}> {
   constructor(props) {
     super(props);
     this.state = {
-      messages: []
+      messages: [],
+      showMessageDetailModal: false
     };
   }
 
   onMessageClick(item) {
-    Alert.alert('Item', JSON.stringify(item));
+    //Alert.alert('Item', JSON.stringify(item));
+    this.setState({ showMessageDetailModal: true });
+
+    if(item.ReadDate == null){
+      MessagesRequest.updateMessageReadDate(item.MessageId);
+    }
+  }
+
+  closeMessageDetailModal(){
+    this.setState({ showMessageDetailModal: false });
+
+    MessagesRequest.getAllMessages()
+    .then((response) => this.setState({messages: response}));
   }
 
   componentDidMount() {
@@ -32,6 +47,19 @@ export default class MessagesScene extends BaseScene<{}> {
   render() {
     return (
       <View style={stylesContainer}>
+        <Modal
+          animationType='fade'
+          visible={this.state.showMessageDetailModal}
+          onRequestClose={() => this.closeMessageDetailModal()}>
+          <View>
+            <Text>Modal for messages</Text>
+          </View>
+          <Button
+            onPress={() => this.closeMessageDetailModal()}
+            title="Close Modal"
+          />
+        </Modal>
+
         <FlatList
           contentContainerStyle={stylesFlatList}
           numColumns={1}
