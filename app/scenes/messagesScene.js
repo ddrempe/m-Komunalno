@@ -5,7 +5,8 @@ import {
   FlatList,
   TouchableHighlight,
   Text,
-  Alert
+  Alert,
+  Image
 } from 'react-native';
 import BaseScene from './baseScene';
 import Moment from 'moment';
@@ -42,11 +43,16 @@ export default class MessagesScene extends BaseScene<{}> {
               onPress={() => this.onMessageClick(item)}
             >
               <View style={stylesTileList}>
-                <Text style={stylesDateCreated}>{Moment(item.Created).format('DD.MM.YYYY.')}</Text>
+              <Image
+                    style={stylesImage}
+                    source={require('./../../icons/default-message.png')} />  
                 <View style={stylesSubject}>
                   <Text style={stylesSubjectText}>{item.Subject}</Text>
                 </View>
+                <View style={stylesDetails}>
+                <Text style={stylesDateCreated}>{Moment(item.Created).format('DD.MM.YYYY.')}</Text>
                 <Text style={stylesDateFrom}>{Moment(item.Created).startOf('day').fromNow()}</Text>
+                </View>         
               </View>
             </TouchableHighlight>
           )}
@@ -76,14 +82,23 @@ const styles = StyleSheet.create({
     fontFamily: 'Rubik'
   },
   subjectText: {
-    paddingTop: 10,
+    paddingTop: 2,
     paddingBottom: 10,
     color: '#000000',
     fontFamily: 'Rubik',
-    fontSize: 16
+    fontSize: 18
   },
   dateFrom: {
     fontFamily: 'Rubik'
+  },
+  image: {
+    flexDirection: 'row',
+    height: 60,
+    width: 60
+  },
+  details: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   }
 });
 
@@ -94,3 +109,5 @@ var stylesSubject = StyleSheet.flatten([styles.subject]);
 var stylesDateCreated = StyleSheet.flatten([styles.dateCreated]);
 var stylesSubjectText = StyleSheet.flatten([styles.subjectText]);
 var stylesDateFrom = StyleSheet.flatten([styles.dateFrom]);
+var stylesImage = StyleSheet.flatten([styles.image]);
+var stylesDetails = StyleSheet.flatten([styles.details]);
