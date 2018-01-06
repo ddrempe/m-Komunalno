@@ -9,27 +9,23 @@ import {
 } from 'react-native';
 import BaseScene from './baseScene';
 import Moment from 'moment';
+import MessagesRequest from '../network/messagesRequest';
 
 export default class MessagesScene extends BaseScene<{}> {
   constructor(props) {
     super(props);
     this.state = {
-      messages: [
-        {
-          'Id':0,
-          'MessageId':58,
-          'UserId':0,
-          'Subject':'Subject',
-          'Text':'text',
-          'Created':'2017-05-29T14:07:19.757+02:00',
-          'ReadDate':null
-        }
-      ]
+      messages: []
     };
   }
 
   onMessageClick(item) {
     Alert.alert('Item', JSON.stringify(item));
+  }
+
+  componentDidMount() {
+    MessagesRequest.getAllMessages()
+      .then((response) => this.setState({messages: response}));
   }
 
   render() {
