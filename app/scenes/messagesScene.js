@@ -25,19 +25,20 @@ export default class MessagesScene extends BaseScene<{}> {
   }
 
   onMessageClick(item) {
-    //Alert.alert('Item', JSON.stringify(item));
     this.setState({ showMessageDetailModal: true , modalItem: item});
 
     if(item.ReadDate == null){
       MessagesRequest.updateMessageReadDate(item.MessageId);
+
+      let messagesUpdated = this.state.messages;
+      const index = messagesUpdated.findIndex(messageToUpdate => messageToUpdate.MessageId === item.MessageId);
+      messagesUpdated[index].ReadDate = 1;
+      this.setState({ messages: messagesUpdated});
     }
   }
 
   closeMessageDetailModal(){
     this.setState({ showMessageDetailModal: false, modalItem: [] });
-
-    MessagesRequest.getAllMessages()
-    .then((response) => this.setState({messages: response}));
   }
 
   componentDidMount() {
@@ -61,7 +62,7 @@ export default class MessagesScene extends BaseScene<{}> {
           <View style={stylesModal}>
             <Text style={stylesDateCreated}>Primljeno: {Moment(this.state.modalItem.Created).format('DD.MM.YYYY.')}</Text>
             <View>
-              <Text style={stylesSubjectText}>{this.state.modalItem.Subject}</Text>
+              <Text style={stylesModalSubjectText}>{this.state.modalItem.Subject}</Text>
             </View>
             <Text style={stylesModalText}>{this.state.modalItem.Text}</Text>
           </View>
@@ -71,6 +72,7 @@ export default class MessagesScene extends BaseScene<{}> {
           contentContainerStyle={stylesFlatList}
           numColumns={1}
           data={this.state.messages}
+          extraData={this.state}
           keyExtractor={(item, index) => (item.Id)}
           renderItem={({item}) => (
             <TouchableHighlight
@@ -150,8 +152,18 @@ const styles = StyleSheet.create({
   modal: {
     padding: 10
   },
+  modalSubjectText: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: '#000000',
+    fontFamily: 'Rubik',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
   modalText: {
     fontFamily: 'Rubik',
+    fontSize: 16,
     color: '#000000'
   }
 });
@@ -168,3 +180,4 @@ var stylesFooter = StyleSheet.flatten([styles.footer]);
 var stylesDateFrom = StyleSheet.flatten([styles.dateFrom]);
 var stylesModalText = StyleSheet.flatten([styles.modalText]);
 var stylesModal = StyleSheet.flatten([styles.modal]);
+var stylesModalSubjectText = StyleSheet.flatten([styles.modalSubjectText]);
