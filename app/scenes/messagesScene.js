@@ -19,24 +19,26 @@ export default class MessagesScene extends BaseScene<{}> {
     super(props);
     this.state = {
       messages: [],
-      showMessageDetailModal: false
+      showMessageDetailModal: false,
+      modalItem: []
     };
   }
 
   onMessageClick(item) {
-    //Alert.alert('Item', JSON.stringify(item));
-    this.setState({ showMessageDetailModal: true });
+    this.setState({ showMessageDetailModal: true , modalItem: item});
 
     if(item.ReadDate == null){
       MessagesRequest.updateMessageReadDate(item.MessageId);
+
+      let messagesUpdated = this.state.messages;
+      const index = messagesUpdated.findIndex(messageToUpdate => messageToUpdate.MessageId === item.MessageId);
+      messagesUpdated[index].ReadDate = 1;
+      this.setState({ messages: messagesUpdated});
     }
   }
 
   closeMessageDetailModal(){
-    this.setState({ showMessageDetailModal: false });
-
-    MessagesRequest.getAllMessages()
-    .then((response) => this.setState({messages: response}));
+    this.setState({ showMessageDetailModal: false, modalItem: [] });
   }
 
   componentDidMount() {
@@ -50,20 +52,27 @@ export default class MessagesScene extends BaseScene<{}> {
         <Modal
           animationType='fade'
           visible={this.state.showMessageDetailModal}
-          onRequestClose={() => this.closeMessageDetailModal()}>
-          <View>
-            <Text>Modal for messages</Text>
-          </View>
+          onRequestClose={() => this.closeMessageDetailModal()}
+        >
           <Button
+            color='#70B5E5'
             onPress={() => this.closeMessageDetailModal()}
             title="Close Modal"
           />
+          <View style={stylesModal}>
+            <Text style={stylesDateCreated}>Primljeno: {Moment(this.state.modalItem.Created).format('DD.MM.YYYY.')}</Text>
+            <View>
+              <Text style={stylesModalSubjectText}>{this.state.modalItem.Subject}</Text>
+            </View>
+            <Text style={stylesModalText}>{this.state.modalItem.Text}</Text>
+          </View>
         </Modal>
 
         <FlatList
           contentContainerStyle={stylesFlatList}
           numColumns={1}
           data={this.state.messages}
+          extraData={this.state}
           keyExtractor={(item, index) => (item.Id)}
           renderItem={({item}) => (
             <TouchableHighlight
@@ -139,6 +148,23 @@ const styles = StyleSheet.create({
   },
   dateFrom: {
     fontFamily: 'Rubik'
+  },
+  modal: {
+    padding: 10
+  },
+  modalSubjectText: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: '#000000',
+    fontFamily: 'Rubik',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  modalText: {
+    fontFamily: 'Rubik',
+    fontSize: 16,
+    color: '#000000'
   }
 });
 
@@ -152,3 +178,6 @@ var stylesSubjectText = StyleSheet.flatten([styles.subjectText]);
 var stylesSubjectTextRead = StyleSheet.flatten([styles.subjectTextRead]);
 var stylesFooter = StyleSheet.flatten([styles.footer]);
 var stylesDateFrom = StyleSheet.flatten([styles.dateFrom]);
+var stylesModalText = StyleSheet.flatten([styles.modalText]);
+var stylesModal = StyleSheet.flatten([styles.modal]);
+var stylesModalSubjectText = StyleSheet.flatten([styles.modalSubjectText]);
