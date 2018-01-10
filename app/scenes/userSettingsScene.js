@@ -8,7 +8,8 @@ import {
 import {
   Button,
   Checkbox,
-  Input
+  Input,
+  Spinner
 } from 'nachos-ui';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import BaseScene from './baseScene';
@@ -29,10 +30,16 @@ export default class UserSettingsScene extends BaseScene<{}> {
   }
 
   openUserDataModal() {
+    if (this.state.status) {
+      this.setState({status: false});
+    };
     this.setState({ showUserDataModal: true });
   }
 
   openPasswordModal() {
+    if (this.state.status) {
+      this.setState({status: false});
+    };
     this.setState({ showPasswordModal: true });
   }
 
@@ -48,12 +55,15 @@ export default class UserSettingsScene extends BaseScene<{}> {
     this.setState({ sendPdfCheckbox })
   }
 
-  onPasswordUpdate() {
-
+  onPasswordUpdate = () => {
+    if (!this.state.status) {
+      this.setState({status: true});
+    };
   }
-
-  onUserDataUpdate() {
-
+  onUserDataUpdate = () => {
+    if (!this.state.status) {
+      this.setState({status: true});
+    };
   }
 
   render() {
@@ -130,7 +140,13 @@ export default class UserSettingsScene extends BaseScene<{}> {
               children='Spremi promjene'
               onPress={this.onPasswordUpdate.bind(this)}
             >
-            </Button>
+            </Button> 
+            <View style={stylesProgressBar}>
+              { this.state.status ? <Spinner color='#70B5E5'/> : null }
+              <View style={stylesTextProgressBar}>
+                { this.state.status ? <Text>Pohrana podataka</Text> : null } 
+              </View>
+            </View>
           </View>
         </Modal>
 
@@ -215,6 +231,12 @@ export default class UserSettingsScene extends BaseScene<{}> {
               onPress={this.onPasswordUpdate.bind(this)}
             >
             </Button>
+            <View style={stylesProgressBar}>
+              { this.state.status ? <Spinner color='#70B5E5'/> : null }
+              <View style={stylesTextProgressBar}>
+                { this.state.status ? <Text>Pohrana podataka</Text> : null } 
+              </View>
+            </View>
           </View>
         </Modal>
 
@@ -316,6 +338,15 @@ const styles = StyleSheet.create({
   buttonCloseModal: {
     backgroundColor: '#70B5E5',
     height: 40
+  },
+  progressBar: {
+    alignItems: 'center',
+    marginTop: 68,
+    height: 52
+  },
+  textProgressBar: {
+    marginTop: 8,
+    alignItems: 'center'
   }
 });
 
@@ -334,3 +365,5 @@ var stylesIcon = StyleSheet.flatten([styles.icon]);
 var stylesInput = StyleSheet.flatten([styles.input]);
 var stylesButtonCloseModalWrapper = StyleSheet.flatten([styles.buttonCloseModalWrapper]);
 var stylesButtonCloseModal = StyleSheet.flatten([styles.buttonCloseModal]);
+var stylesProgressBar = StyleSheet.flatten([styles.progressBar]);
+var stylesTextProgressBar = StyleSheet.flatten([styles.textProgressBar]);
