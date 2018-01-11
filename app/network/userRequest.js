@@ -51,6 +51,20 @@ class UserRequest extends BaseRequest {
                 return response;
             });
     }
+
+    changePassword(oldPassword, newPassword, repeatPassword) {
+        var options = {
+           body: {
+               OldPassword: oldPassword,
+               NewPassword: newPassword,
+               RepeatPassword: repeatPassword
+           }           
+       };
+
+       var path = '/users/changePassword'
+
+       return this.postRaw(options, path);
+   }
 }
 
 let userRequest = new UserRequest();

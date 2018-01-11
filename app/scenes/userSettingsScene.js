@@ -3,7 +3,8 @@ import {
   StyleSheet,
   View,
   Text,
-  Modal
+  Modal,
+  Alert
 } from 'react-native';
 import {
   Button,
@@ -13,6 +14,7 @@ import {
 } from 'nachos-ui';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import BaseScene from './baseScene';
+import UserRequest from '../network/userRequest';
 
 export default class UserSettingsScene extends BaseScene<{}> {
   constructor(props) {
@@ -55,11 +57,56 @@ export default class UserSettingsScene extends BaseScene<{}> {
     this.setState({ sendPdfCheckbox })
   }
 
+  validateNewPassword(newPassword) {
+    var regEx = new RegExp(global.texts["SETTING_PASSWORD_VALIDATION_REGEX"]);
+
+    return regEx.test(this.state.newPassword);
+  };
+
   onPasswordUpdate = () => {
     if (!this.state.status) {
       this.setState({status: true});
     };
+
+    if (!this.state.oldPassword) {
+      Alert.alert('Greška!', 'Niste unijeli staru lozinku');
+      this.setState({status: false});
+      return;
+    } else if (this.state.newPassword != this.state.repeatPassword) {
+      Alert.alert('Greška!', 'Nova lozinka i ponovljena lozinka se ne podudaraju');
+      this.setState({status: false});
+      return;
+    } else if (!this.validateNewPassword(this.state.newPassword)) {
+      Alert.alert('Greška!', 'Lozinka mora biti dugačka minimalno 6 znakova, mora sadržavati minimalno jedan znak i minimalno jedan broj');
+      this.setState({status: false});
+      return;
+    }    
+
+    UserRequest.changePassword(this.state.oldPassword, this.state.newPassword, this.state.repeatPassword)
+      .then((response) => this.onPasswordChangeSuccesful(response));
   }
+
+  onPasswordChangeSuccesful(response) {
+    this.setState({status: false});
+
+    if(response.status === 403){
+        Alert.alert('Greška!', 'Niste unijeli ispravnu staru lozinku');
+    } else {
+          
+      if (response.ok) {
+        Alert.alert('Uspjeh!', 'Lozinka je uspješno promijenjena');
+      } else {
+          this.onPasswordChangeFailed();
+      }
+    }
+  }
+
+  onPasswordChangeFailed() {
+    this.setState({status: false});
+
+    Alert.alert('Greška!', 'Greška kod izmjene lozinke.');
+  }
+
   onUserDataUpdate = () => {
     if (!this.state.status) {
       this.setState({status: true});
