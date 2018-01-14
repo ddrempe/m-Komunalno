@@ -65,6 +65,21 @@ class UserRequest extends BaseRequest {
 
        return this.postRaw(options, path);
    }
+
+   saveChanges(emailAddress, mobilePhoneNumber, sendPdfCheckbox, userId) {
+        var options = {
+            body: {
+                Id: userId,
+                Email: emailAddress,
+                MobilePhone: mobilePhoneNumber,
+                Ebill: sendPdfCheckbox
+            }
+        };
+
+        var path = '/users/connectedUser'
+
+        return this.put(options, path);
+    }
 }
 
 let userRequest = new UserRequest();

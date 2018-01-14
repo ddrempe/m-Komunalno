@@ -45,4 +45,18 @@ export default class BaseRequest {
             return null;
         };
     }
+
+    async putRaw(options, path) {
+        options.method = 'PUT';
+
+        let response = await this.fetch(options, path);
+        return response;
+    }
+
+    async put(options, path) {
+        let rawResponse = await this.putRaw(options, path);
+
+        let body = await rawResponse.json();
+        return body;
+    }
 }
