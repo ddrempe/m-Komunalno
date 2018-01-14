@@ -15,13 +15,14 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import BaseScene from './baseScene';
 import UserRequest from '../network/userRequest';
+import Settings from '../../settings';
 
 export default class UserSettingsScene extends BaseScene<{}> {
   constructor(props) {
     super(props);
     this.state = {
-      eMailAddress: 'emai@email.email',
-      mobilePhoneNumber: '099 123 456 789',
+      eMailAddress: '',   //TODO: popuniti email i broj mobitela starim vrijednostima da korisnik moze promijeniti samo jedno ako zeli
+      mobilePhoneNumber: '',
       sendPdfCheckbox: true,
       oldPassword: '',
       newPassword: '',
@@ -138,6 +139,24 @@ export default class UserSettingsScene extends BaseScene<{}> {
       this.setState({status: false});
       return;
     } 
+    UserRequest.saveChanges(
+      this.state.eMailAddress,
+      this.state.mobilePhoneNumber,
+      this.state.sendPdfCheckbox,
+      Settings.getConnectedUser().Id
+    )
+      .then(() => this.onSaveChangesSuccesful())
+      .catch(() => this.onSaveChangesFail());
+  }
+
+  onSaveChangesSuccesful() {
+    this.setState({ status: false });
+    Alert.alert('Uspjeh!', "Podaci uspješno spremljeni.");
+  }
+
+  onSaveChangesFail(response) {
+    this.setState({ status: false });
+    Alert.alert('Greška!', "Greška prilikom spremanja podataka.");
   }
 
   render() {
