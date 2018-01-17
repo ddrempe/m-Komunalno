@@ -64,6 +64,16 @@ export default class UserSettingsScene extends BaseScene<{}> {
     return regEx.test(this.state.newPassword);
   };
 
+  validateNewEmail(newEmail) {
+    var regEx = new RegExp(global.texts["SETTING_EMAIL_VALIDATION_REGEX"]);
+
+    return regEx.test(this.state.newEmail);
+  };
+  validateNewPhone(newPhone) {
+    var regEx = new RegExp(global.texts["SETTING_MOBILE_PHONE_VALIDATION_REGEX"]);
+
+    return regEx.test(this.state.newPhone);
+  };
   onPasswordUpdate = () => {
     if (!this.state.status) {
       this.setState({status: true});
@@ -112,7 +122,23 @@ export default class UserSettingsScene extends BaseScene<{}> {
     if (!this.state.status) {
       this.setState({status: true});
     };
-
+    if (!this.state.eMailAddress) {
+      Alert.alert('Greška!', 'Niste unijeli email');
+      this.setState({status: false});
+      return;
+    } else if (!this.validateNewEmail(this.state.eMailAddress)) {
+      Alert.alert('Greška!', 'Email adresa nije validna');
+      this.setState({status: false});
+      return;
+    } else if (!this.state.mobilePhoneNumber) {
+      Alert.alert('Greška!', 'Niste unijeli broj telefona');
+      this.setState({status: false});
+      return;
+     } else if (!this.validateNewPhone(this.state.mobilePhoneNumber)) {
+      Alert.alert('Greška!', 'Broj telefona nije validan');
+      this.setState({status: false});
+      return;
+    } 
     UserRequest.saveChanges(
       this.state.eMailAddress,
       this.state.mobilePhoneNumber,
