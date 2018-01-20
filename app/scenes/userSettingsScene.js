@@ -13,22 +13,24 @@ import {
   Spinner
 } from 'nachos-ui';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import BaseScene from './baseScene';
-import UserRequest from '../network/userRequest';
+import ActionBar from '../components/actionBar';
 import Settings from '../../settings';
+import UserRequest from '../network/userRequest';
+import BaseScene from './baseScene';
 
 export default class UserSettingsScene extends BaseScene<{}> {
   constructor(props) {
     super(props);
     this.state = {
-      eMailAddress: '',   //TODO: popuniti email i broj mobitela starim vrijednostima da korisnik moze promijeniti samo jedno ako zeli
+      eMailAddress: '',
       mobilePhoneNumber: '',
-      sendPdfCheckbox: true,
+      sendPdfCheckbox: false,
       oldPassword: '',
       newPassword: '',
       repeatPassword: '',
       showUserDataModal: false,
-      showPasswordModal: false
+      showPasswordModal: false,
+      status: false
     };
   }
 
@@ -36,44 +38,48 @@ export default class UserSettingsScene extends BaseScene<{}> {
     if (this.state.status) {
       this.setState({status: false});
     };
-    this.setState({ showUserDataModal: true });
+
+    this.setState({showUserDataModal: true});
   }
 
   openPasswordModal() {
     if (this.state.status) {
       this.setState({status: false});
     };
-    this.setState({ showPasswordModal: true });
+
+    this.setState({showPasswordModal: true});
   }
 
   closeUserDataModal() {
-    this.setState({ showUserDataModal: false });
+    this.setState({showUserDataModal: false});
   }
 
   closePasswordModal() {
-    this.setState({ showPasswordModal: false });
+    this.setState({showPasswordModal: false});
   }
 
   handleCheckboxChange = (sendPdfCheckbox) => {
-    this.setState({ sendPdfCheckbox })
+    this.setState({sendPdfCheckbox})
   }
 
   validateNewPassword(newPassword) {
-    var regEx = new RegExp(global.texts["SETTING_PASSWORD_VALIDATION_REGEX"]);
+    var regEx = new RegExp(global.texts['SETTING_PASSWORD_VALIDATION_REGEX']);
 
     return regEx.test(this.state.newPassword);
   };
 
   validateNewEmail(newEmail) {
-    var regEx = new RegExp(global.texts["SETTING_EMAIL_VALIDATION_REGEX"]);
+    var regEx = new RegExp(global.texts['SETTING_EMAIL_VALIDATION_REGEX']);
 
     return regEx.test(this.state.newEmail);
   };
+
   validateNewPhone(newPhone) {
-    var regEx = new RegExp(global.texts["SETTING_MOBILE_PHONE_VALIDATION_REGEX"]);
+    var regEx = new RegExp(global.texts['SETTING_MOBILE_PHONE_VALIDATION_REGEX']);
 
     return regEx.test(this.state.newPhone);
   };
+
   onPasswordUpdate = () => {
     if (!this.state.status) {
       this.setState({status: true});
@@ -91,7 +97,7 @@ export default class UserSettingsScene extends BaseScene<{}> {
       Alert.alert('Greška!', 'Lozinka mora biti dugačka minimalno 6 znakova, mora sadržavati minimalno jedan znak i minimalno jedan broj');
       this.setState({status: false});
       return;
-    }    
+    };
 
     UserRequest.changePassword(this.state.oldPassword, this.state.newPassword, this.state.repeatPassword)
       .then((response) => this.onPasswordChangeSuccesful(response));
@@ -100,28 +106,28 @@ export default class UserSettingsScene extends BaseScene<{}> {
   onPasswordChangeSuccesful(response) {
     this.setState({status: false});
 
-    if(response.status === 403){
-        Alert.alert('Greška!', 'Niste unijeli ispravnu staru lozinku');
+    if (response.status === 403) {
+      Alert.alert('Greška!', 'Niste unijeli ispravnu staru lozinku');
     } else {
-          
       if (response.ok) {
         Alert.alert('Uspjeh!', 'Lozinka je uspješno promijenjena');
       } else {
-          this.onPasswordChangeFailed();
-      }
-    }
+        this.onPasswordChangeFailed();
+      };
+    };
   }
 
   onPasswordChangeFailed() {
     this.setState({status: false});
 
-    Alert.alert('Greška!', 'Greška kod izmjene lozinke.');
+    Alert.alert('Greška!', 'Greška kod izmjene lozinke');
   }
 
   onUserDataUpdate = () => {
     if (!this.state.status) {
       this.setState({status: true});
     };
+
     if (!this.state.eMailAddress) {
       Alert.alert('Greška!', 'Niste unijeli email');
       this.setState({status: false});
@@ -138,7 +144,8 @@ export default class UserSettingsScene extends BaseScene<{}> {
       Alert.alert('Greška!', 'Broj telefona nije validan');
       this.setState({status: false});
       return;
-    } 
+    };
+    
     UserRequest.saveChanges(
       this.state.eMailAddress,
       this.state.mobilePhoneNumber,
@@ -150,18 +157,30 @@ export default class UserSettingsScene extends BaseScene<{}> {
   }
 
   onSaveChangesSuccesful() {
-    this.setState({ status: false });
-    Alert.alert('Uspjeh!', "Podaci uspješno spremljeni.");
+    this.setState({status: false});
+
+    Alert.alert('Uspjeh!', 'Podaci uspješno spremljeni');
   }
 
   onSaveChangesFail(response) {
-    this.setState({ status: false });
-    Alert.alert('Greška!', "Greška prilikom spremanja podataka.");
+    this.setState({status: false});
+
+    Alert.alert('Greška!', 'Greška prilikom spremanja podataka');
+  }
+
+  componentDidMount() {
+    var user = Settings.getConnectedUser();
+    this.setState({eMailAddress: user.Email, mobilePhoneNumber: user.MobilePhone, sendPdfCheckbox: user.Ebill});
   }
 
   render() {
     return (
       <View style={stylesContainer}>
+        <ActionBar
+          title='Korisnički podaci'
+          onLeftPress={() => this.onBackPress()}
+          onRightPress={() => this.logout()}
+        />
         <Modal
           animationType='fade'
           visible={this.state.showUserDataModal}
@@ -171,6 +190,9 @@ export default class UserSettingsScene extends BaseScene<{}> {
             <Button
               style={stylesButtonCloseModal}
               kind='squared'
+              iconSize={20}
+              iconPosition='left'
+              iconName='md-close'
               uppercase={false}
               children='Zatvori prozor'
               onPress={() => this.closeUserDataModal()}
@@ -178,8 +200,8 @@ export default class UserSettingsScene extends BaseScene<{}> {
             </Button>
           </View>
           <View style={stylesModal}>
-            <View style={stylesModalTitle}>
-              <Text style={stylesModalTitleText}>Promjena korisničkih podataka</Text>
+            <View style={stylesModalTitleWrapper}>
+              <Text style={stylesModalTitle}>Promjena korisničkih podataka</Text>
             </View>
             <View style={stylesRow}>
               <View style={stylesIcon}>
@@ -235,14 +257,13 @@ export default class UserSettingsScene extends BaseScene<{}> {
             >
             </Button> 
             <View style={stylesProgressBar}>
-              { this.state.status ? <Spinner color='#70B5E5'/> : null }
+              {this.state.status ? <Spinner color='#70B5E5'/> : null}
               <View style={stylesTextProgressBar}>
-                { this.state.status ? <Text>Pohrana podataka</Text> : null } 
+                {this.state.status ? <Text>Pohrana podataka</Text> : null} 
               </View>
             </View>
           </View>
         </Modal>
-
         <Modal
           animationType='fade'
           visible={this.state.showPasswordModal}
@@ -252,6 +273,9 @@ export default class UserSettingsScene extends BaseScene<{}> {
             <Button
               style={stylesButtonCloseModal}
               kind='squared'
+              iconSize={20}
+              iconPosition='left'
+              iconName='md-close'
               uppercase={false}
               children='Zatvori prozor'
               onPress={() => this.closePasswordModal()}
@@ -259,8 +283,8 @@ export default class UserSettingsScene extends BaseScene<{}> {
             </Button>
           </View>
           <View style={stylesModal}>
-            <View style={stylesModalTitle}>
-              <Text style={stylesModalTitleText}>Promjena lozinke</Text>
+            <View style={stylesModalTitleWrapper}>
+              <Text style={stylesModalTitle}>Promjena lozinke</Text>
             </View>
             <View style={stylesRow}>
               <View style={stylesIcon}>
@@ -325,47 +349,48 @@ export default class UserSettingsScene extends BaseScene<{}> {
             >
             </Button>
             <View style={stylesProgressBar}>
-              { this.state.status ? <Spinner color='#70B5E5'/> : null }
+              {this.state.status ? <Spinner color='#70B5E5'/> : null}
               <View style={stylesTextProgressBar}>
-                { this.state.status ? <Text>Pohrana podataka</Text> : null } 
+                {this.state.status ? <Text>Pohrana podataka</Text> : null} 
               </View>
             </View>
           </View>
         </Modal>
-
-        <Text style={stylesInfo}>Email: {this.state.eMailAddress}</Text>
-        <Text style={stylesInfo}>Broj mobitela: {this.state.mobilePhoneNumber}</Text>
-        <View style={stylesCheckboxWrapper}>
-          <Text style={stylesInfo}>Želim primati PDF račune: </Text>
-          <Checkbox
-            style={stylesCheckbox}
-            activeOpacity={1}
-            checked={this.state.sendPdfCheckbox}
-          />
-        </View>
-        <View>
-          <Button
-            style={stylesButtonUpdate}
-            kind='squared'
-            iconSize={20}
-            iconPosition='left'
-            iconName='md-create'
-            uppercase={false}
-            children='Ažuriranje podataka'
-            onPress={this.openUserDataModal.bind(this)}
-          >
-          </Button>
-          <Button
-            style={stylesButtonUpdateSecond}
-            kind='squared'
-            iconSize={20}
-            iconPosition='left'
-            iconName='md-lock'
-            uppercase={false}
-            children='Promjena lozinke'
-            onPress={this.openPasswordModal.bind(this)}
-          >
-          </Button>
+        <View style={stylesInfoWrapper}>
+          <Text style={stylesInfo}>Email: {this.state.eMailAddress}</Text>
+          <Text style={stylesInfo}>Broj mobitela: {this.state.mobilePhoneNumber}</Text>
+          <View style={stylesCheckboxWrapper}>
+            <Text style={stylesInfo}>Želim primati PDF račune: </Text>
+            <Checkbox
+              style={stylesCheckbox}
+              activeOpacity={1}
+              checked={this.state.sendPdfCheckbox}
+            />
+          </View>
+          <View>
+            <Button
+              style={stylesButtonUpdate}
+              kind='squared'
+              iconSize={20}
+              iconPosition='left'
+              iconName='md-create'
+              uppercase={false}
+              children='Ažuriranje podataka'
+              onPress={this.openUserDataModal.bind(this)}
+            >
+            </Button>
+            <Button
+              style={stylesButtonUpdateSecond}
+              kind='squared'
+              iconSize={20}
+              iconPosition='left'
+              iconName='md-lock'
+              uppercase={false}
+              children='Promjena lozinke'
+              onPress={this.openPasswordModal.bind(this)}
+            >
+            </Button>
+          </View>
         </View>
       </View>
     );
@@ -375,13 +400,15 @@ export default class UserSettingsScene extends BaseScene<{}> {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#E4E4E4',
-    flex: 1,
-    padding: 10
+    flex: 1
+  },
+  infoWrapper: {
+    padding: 4
   },
   info: {
     paddingBottom: 16,
-    fontSize: 18,
-    color: '#000000'
+    color: '#000000',
+    fontSize: 18
   },
   checkboxWrapper: {
     flexDirection: 'row'
@@ -389,11 +416,6 @@ const styles = StyleSheet.create({
   checkbox: {
     backgroundColor: '#70B5E5',
     borderColor: '#70B5E5'
-  },
-  modalInfo: {
-    paddingBottom: 16,
-    fontSize: 18,
-    color: '#000000'
   },
   buttonUpdate: {
     backgroundColor: '#70B5E5',
@@ -403,15 +425,20 @@ const styles = StyleSheet.create({
     marginTop: 66
   },
   modal: {
-    padding: 10
+    padding: 4
   },
-  modalTitle: {
+  modalTitleWrapper: {
     alignItems: 'center',
     paddingBottom: 16
   },
-  modalTitleText: {
+  modalTitle: {
     fontSize: 18,
     textAlign: 'center',
+    color: '#000000'
+  },
+  modalInfo: {
+    paddingBottom: 16,
+    fontSize: 18,
     color: '#000000'
   },
   row: {
@@ -426,16 +453,16 @@ const styles = StyleSheet.create({
     flex: 1
   },
   buttonCloseModalWrapper: {
-    marginBottom: 40
+    marginBottom: 46
   },
   buttonCloseModal: {
     backgroundColor: '#70B5E5',
-    height: 40
+    height: 46
   },
   progressBar: {
     alignItems: 'center',
-    marginTop: 68,
-    height: 52
+    marginTop: 74,
+    height: 58
   },
   textProgressBar: {
     marginTop: 8,
@@ -444,14 +471,15 @@ const styles = StyleSheet.create({
 });
 
 var stylesContainer = StyleSheet.flatten([styles.container]);
+var stylesInfoWrapper = StyleSheet.flatten([styles.infoWrapper]);
 var stylesInfo = StyleSheet.flatten([styles.info]);
 var stylesCheckboxWrapper = StyleSheet.flatten([styles.checkboxWrapper]);
 var stylesCheckbox = StyleSheet.flatten([styles.checkbox]);
 var stylesButtonUpdate = StyleSheet.flatten([styles.buttonUpdate]);
 var stylesButtonUpdateSecond = StyleSheet.flatten([styles.buttonUpdateSecond]);
 var stylesModal = StyleSheet.flatten([styles.modal]);
+var stylesModalTitleWrapper = StyleSheet.flatten([styles.modalTitleWrapper]);
 var stylesModalTitle = StyleSheet.flatten([styles.modalTitle]);
-var stylesModalTitleText = StyleSheet.flatten([styles.modalTitleText]);
 var stylesModalInfo = StyleSheet.flatten([styles.modalInfo]);
 var stylesRow = StyleSheet.flatten([styles.row]);
 var stylesIcon = StyleSheet.flatten([styles.icon]);

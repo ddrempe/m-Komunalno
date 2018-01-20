@@ -1,11 +1,18 @@
 import BaseRequest from './baseRequest';
-import Settings from '../../settings';
 
 class InvoicesRequest extends BaseRequest {
     getAllInvoices() {
         var options = {};
 
-        var path = '/invoices/' + Settings.getConnectedUser().Id;
+        var path = '/invoices/{connectedUserId}';
+
+        return this.get(options, path);
+    }
+
+    getAllInvoiceTypes() {
+        var options = {};
+
+        var path = '/invoices/types';
 
         return this.get(options, path);
     }
@@ -13,7 +20,7 @@ class InvoicesRequest extends BaseRequest {
     getInvoicesByType(invoiceTypeId) {
         var options = {};
 
-        var path = '/invoices/' + Settings.getConnectedUser().Id + '/' + invoiceTypeId;
+        var path = '/invoices/{connectedUserId}/' + invoiceTypeId;
 
         return this.get(options, path);
     }

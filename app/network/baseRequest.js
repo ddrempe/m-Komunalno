@@ -16,6 +16,7 @@ export default class BaseRequest {
         };
 
         var url = global.settings.API_URL + path;
+        url = this.replaceUrlTags(url);
 
         let response = await fetch(url, options);
         return response;
@@ -28,6 +29,13 @@ export default class BaseRequest {
         return response;
     }
 
+    async post(options, path) {
+        let rawResponse = await this.postRaw(options, path);
+
+        let body = await rawResponse.json();
+        return body;
+    }
+
     async getRaw(options, path) {
         options.method = 'GET';
 
@@ -38,12 +46,8 @@ export default class BaseRequest {
     async get(options, path) {
         let rawResponse = await this.getRaw(options, path);
 
-        if (rawResponse.ok) {
-            let body = await rawResponse.json();
-            return body;
-        } else {
-            return null;
-        };
+        let body = await rawResponse.json();
+        return body;
     }
 
     async putRaw(options, path) {
@@ -58,5 +62,13 @@ export default class BaseRequest {
 
         let body = await rawResponse.json();
         return body;
+    }
+
+    replaceUrlTags(url) {
+        if (url.indexOf('{connectedUserId}') != -1) {
+            url = url.replace('{connectedUserId}', Settings.getConnectedUser().Id);
+        };
+
+        return url;
     }
 }
