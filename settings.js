@@ -69,6 +69,10 @@ class Settings {
     setAuthHeader(value) {
         return this.setValue(KEY_AUTH_HEADER, value);
     }
+
+    removeAuthHeader() {
+        AsyncStorage.removeItem(KEY_AUTH_HEADER);
+    }
 }
 
 let settings = new Settings();

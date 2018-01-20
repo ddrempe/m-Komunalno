@@ -2,36 +2,43 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  Text,
+  Image,
   NetInfo,
   InteractionManager,
   Alert
 } from 'react-native';
-import BaseScene from './baseScene';
 import Settings from '../../settings';
+import BaseScene from './baseScene';
 
 export default class SplashScene extends BaseScene<{}> {
   constructor(props) {
     super(props);
-
     InteractionManager.runAfterInteractions(() => {
       Settings.fetchAll(this.onSettingsLoad.bind(this))
-        .catch((response) => Alert.alert('Error', JSON.stringify(response)));
+        .catch(() => this.goto('NoConnectionScene', {title: 'NoConnectionScene'}));
     });
   }
 
   onSettingsLoad(connectedUser) {
     if (Settings.getConnectedUser()) {
-        this.goto('MainScene');
+      this.goto('MainScene');
     } else {
-        this.goto('LoginScene');
+      this.goto('LoginScene');
     };
+  }
+
+  componentDidMount() {
+    NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectionChange);
   }
 
   render() {
     return (
       <View style={stylesContainer}>
-        <Text>Splash Scene</Text>
+        <Image
+          style={stylesLogo}
+          resizeMode='contain'
+          source={{uri: 'https://raw.githubusercontent.com/ddrempe/m-Komunalno/test/icons/logo.png'}}
+        />
       </View>
     );
   }
@@ -42,8 +49,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#E4E4E4',
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1
+    flex: 1,
+    padding: 12
+  },
+  logo: {
+    height: 40,
+    width: 40
   }
 });
 
 var stylesContainer = StyleSheet.flatten([styles.container]);
+var stylesLogo = StyleSheet.flatten([styles.logo]);

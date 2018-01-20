@@ -9,10 +9,11 @@ import {
   Modal,
   Button
 } from 'react-native';
-import Ionicons from "react-native-vector-icons/Ionicons";
-import BaseScene from './baseScene';
+import Icon from "react-native-vector-icons/Ionicons";
+import ActionBar from '../components/actionBar';
 import Moment from 'moment';
 import MessagesRequest from '../network/messagesRequest';
+import BaseScene from './baseScene';
 
 export default class MessagesScene extends BaseScene<{}> {
   constructor(props) {
@@ -49,6 +50,11 @@ export default class MessagesScene extends BaseScene<{}> {
   render() {
     return (
       <View style={stylesContainer}>
+        <ActionBar
+          title='Poruke'
+          onLeftPress={() => this.onBackPress()}
+          onRightPress={() => this.logout()}
+        />
         <Modal
           animationType='fade'
           visible={this.state.showMessageDetailModal}
@@ -86,11 +92,11 @@ export default class MessagesScene extends BaseScene<{}> {
                 </View>
                 <View style={stylesFooter}>
                   <Text style={stylesDateFrom}>{Moment(item.Created).startOf('day').fromNow()}</Text>
-                  <Ionicons
+                  <Icon
                     size={20}
                     name={item.ReadDate ? 'md-mail-open' : 'md-mail'}
                   >
-                  </Ionicons>
+                  </Icon>
                 </View>
               </View>
             </TouchableHighlight>

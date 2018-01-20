@@ -1,5 +1,5 @@
-import BaseRequest from './baseRequest';
 import Settings from '../../settings';
+import BaseRequest from './baseRequest';
 
 class UserRequest extends BaseRequest {
     login(username, password) {
@@ -18,6 +18,14 @@ class UserRequest extends BaseRequest {
                 cookies = ((cookies[0].split(';'))[0].split('='))[1];
                 Settings.setAuthHeader(cookies);
             });
+    }
+
+    logout() {
+        var options = {};
+
+        var path = '/users/logout';
+
+        return this.getRaw(options, path);
     }
 
     fetchConnectedUser() {
@@ -40,16 +48,7 @@ class UserRequest extends BaseRequest {
             path = '/tiles?enabledOnly=true&availableToUserOnly=false';
         };
 
-        return this.get(options, path)
-            .then((response) => {
-                response.map((tile) => {
-                    tile.IconUrl = require('../images/default.png');
-
-                    //TODO: react native require() ne podržava dohvačanje slike preko variable
-                    //potrebno je pronaći neki workaround
-                });
-                return response;
-            });
+        return this.get(options, path);
     }
 
     changePassword(oldPassword, newPassword, repeatPassword) {
@@ -58,10 +57,10 @@ class UserRequest extends BaseRequest {
                OldPassword: oldPassword,
                NewPassword: newPassword,
                RepeatPassword: repeatPassword
-           }           
+           }
        };
 
-       var path = '/users/changePassword'
+       var path = '/users/changePassword';
 
        return this.postRaw(options, path);
    }
@@ -76,7 +75,7 @@ class UserRequest extends BaseRequest {
             }
         };
 
-        var path = '/users/connectedUser'
+        var path = '/users/connectedUser';
 
         return this.put(options, path);
     }
