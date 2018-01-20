@@ -5,11 +5,12 @@ import {
   FlatList,
   TouchableHighlight,
   Text,
-  Alert,
-  Modal,
-  Button
+  Modal
 } from 'react-native';
-import Icon from "react-native-vector-icons/Ionicons";
+import {
+  Button
+} from 'nachos-ui';
+import Icon from 'react-native-vector-icons/Ionicons';
 import ActionBar from '../components/actionBar';
 import Moment from 'moment';
 import MessagesRequest from '../network/messagesRequest';
@@ -60,20 +61,27 @@ export default class MessagesScene extends BaseScene<{}> {
           visible={this.state.showMessageDetailModal}
           onRequestClose={() => this.closeMessageDetailModal()}
         >
-          <Button
-            color='#70B5E5'
-            onPress={() => this.closeMessageDetailModal()}
-            title="Close Modal"
-          />
+          <View style={stylesModalButtonWrapper}>
+            <Button
+              style={stylesModalButton}
+              kind='squared'
+              iconSize={20}
+              iconPosition='left'
+              iconName='md-close'
+              uppercase={false}
+              children='Zatvori'
+              onPress={() => this.closeMessageDetailModal()}
+            >
+            </Button>
+          </View>
           <View style={stylesModal}>
             <Text style={stylesDateCreated}>Primljeno: {Moment(this.state.modalItem.Created).format('DD.MM.YYYY.')}</Text>
             <View>
-              <Text style={stylesModalSubjectText}>{this.state.modalItem.Subject}</Text>
+              <Text style={stylesModalSubject}>{this.state.modalItem.Subject}</Text>
             </View>
             <Text style={stylesModalText}>{this.state.modalItem.Text}</Text>
           </View>
         </Modal>
-
         <FlatList
           contentContainerStyle={stylesFlatList}
           numColumns={1}
@@ -85,10 +93,10 @@ export default class MessagesScene extends BaseScene<{}> {
               underlayColor='black'
               onPress={() => this.onMessageClick(item)}
             >
-              <View style={item.ReadDate ? stylesTileListRead : stylesTileList}>
+              <View style={item.ReadDate ? stylesTileRead : stylesTile}>
                 <Text style={stylesDateCreated}>{Moment(item.Created).format('DD.MM.YYYY.')}</Text>
-                <View style={stylesSubject}>
-                  <Text style={item.ReadDate ? stylesSubjectTextRead : stylesSubjectText}>{item.Subject}</Text>
+                <View style={stylesSubjectWrapper}>
+                  <Text style={item.ReadDate ? stylesSubjectRead : stylesSubject}>{item.Subject}</Text>
                 </View>
                 <View style={stylesFooter}>
                   <Text style={stylesDateFrom}>{Moment(item.Created).startOf('day').fromNow()}</Text>
@@ -115,12 +123,12 @@ const styles = StyleSheet.create({
   flatList: {
     margin: 2
   },
-  tileList: {
+  tile: {
     backgroundColor: '#FFFFFF',
     margin: 2,
     padding: 10
   },
-  tileListRead: {
+  tileRead: {
     backgroundColor: '#D6DBE0',
     margin: 2,
     padding: 10
@@ -128,10 +136,10 @@ const styles = StyleSheet.create({
   dateCreated: {
     fontFamily: 'Rubik'
   },
-  subject: {
+  subjectWrapper: {
     alignItems: 'center'
   },
-  subjectText: {
+  subject: {
     paddingTop: 10,
     paddingBottom: 10,
     color: '#000000',
@@ -140,7 +148,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center'
   },
-  subjectTextRead: {
+  subjectRead: {
     paddingTop: 10,
     paddingBottom: 10,
     color: '#000000',
@@ -158,7 +166,7 @@ const styles = StyleSheet.create({
   modal: {
     padding: 10
   },
-  modalSubjectText: {
+  modalSubject: {
     paddingTop: 10,
     paddingBottom: 10,
     color: '#000000',
@@ -171,19 +179,28 @@ const styles = StyleSheet.create({
     fontFamily: 'Rubik',
     fontSize: 16,
     color: '#000000'
+  },
+  modalButtonWrapper: {
+    marginBottom: 46
+  },
+  modalButton: {
+    backgroundColor: '#70B5E5',
+    height: 46
   }
 });
 
 var stylesContainer = StyleSheet.flatten([styles.container]);
 var stylesFlatList = StyleSheet.flatten([styles.flatList]);
-var stylesTileList = StyleSheet.flatten([styles.tileList]);
-var stylesTileListRead = StyleSheet.flatten([styles.tileListRead]);
-var stylesSubject = StyleSheet.flatten([styles.subject]);
+var stylesTile = StyleSheet.flatten([styles.tile]);
+var stylesTileRead = StyleSheet.flatten([styles.tileRead]);
 var stylesDateCreated = StyleSheet.flatten([styles.dateCreated]);
-var stylesSubjectText = StyleSheet.flatten([styles.subjectText]);
-var stylesSubjectTextRead = StyleSheet.flatten([styles.subjectTextRead]);
+var stylesSubjectWrapper = StyleSheet.flatten([styles.subjectWrapper]);
+var stylesSubject = StyleSheet.flatten([styles.subject]);
+var stylesSubjectRead = StyleSheet.flatten([styles.subjectRead]);
 var stylesFooter = StyleSheet.flatten([styles.footer]);
 var stylesDateFrom = StyleSheet.flatten([styles.dateFrom]);
-var stylesModalText = StyleSheet.flatten([styles.modalText]);
 var stylesModal = StyleSheet.flatten([styles.modal]);
-var stylesModalSubjectText = StyleSheet.flatten([styles.modalSubjectText]);
+var stylesModalSubject = StyleSheet.flatten([styles.modalSubject]);
+var stylesModalText = StyleSheet.flatten([styles.modalText]);
+var stylesModalButtonWrapper = StyleSheet.flatten([styles.modalButtonWrapper]);
+var stylesModalButton = StyleSheet.flatten([styles.modalButton]);

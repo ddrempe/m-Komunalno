@@ -3,7 +3,7 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableHighlight
+  TouchableOpacity
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -11,27 +11,25 @@ export default class ActionBar extends Component<{}> {
   render() {
     return (
       <View style={stylesContainer}>
-        <TouchableHighlight
+        <TouchableOpacity
           style={stylesIconWrapper}
-          underlayColor='white'
           onPress={() => this.props.onLeftPress()}
         >
           <Icon
             size={20}
             name='md-arrow-back'
           />
-        </TouchableHighlight>
+        </TouchableOpacity>
         <Text style={stylesTitle}>{this.props.title}</Text>
-        <TouchableHighlight
+        <TouchableOpacity
           style={stylesIconWrapper}
-          underlayColor='white'
           onPress={() => this.props.onRightPress()}
         >
           <Icon
             size={20}
             name='md-log-out'
           />
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     );
   }

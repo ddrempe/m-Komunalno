@@ -1,11 +1,10 @@
 import BaseRequest from './baseRequest';
-import Settings from '../../settings';
 
 class MessagesRequest extends BaseRequest {
     getAllMessages() {
         var options = {};
 
-        var path = '/usermessages/' + Settings.getConnectedUser().Id;
+        var path = '/usermessages/{connectedUserId}';
 
         return this.get(options, path);
     }
@@ -13,7 +12,7 @@ class MessagesRequest extends BaseRequest {
     updateMessageReadDate(messageId) {
         var options = {};
 
-        var path = '/users/' + Settings.getConnectedUser().Id + '/usermessages/' + messageId;
+        var path = '/users/{connectedUserId}/usermessages/' + messageId;
 
         return this.get(options, path);
     }

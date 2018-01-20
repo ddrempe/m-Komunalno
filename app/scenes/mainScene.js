@@ -60,6 +60,9 @@ export default class MainScene extends BaseScene<{}> {
           <Button
             style={stylesButtonChange}
             kind='squared'
+            iconSize={20}
+            iconPosition='left'
+            iconName={this.state.key != 2 ? 'md-list' : 'md-grid'}
             uppercase={false}
             children={this.state.view}
             onPress={this.onToggle.bind(this)}
@@ -104,11 +107,11 @@ const styles = StyleSheet.create({
     flex: 1
   },
   buttonChangeWrapper: {
-    marginBottom: 40
+    marginBottom: 46
   },
   buttonChange: {
     backgroundColor: '#70B5E5',
-    height: 40
+    height: 46
   },
   flatList: {
     margin: 2
