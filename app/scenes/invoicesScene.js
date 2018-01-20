@@ -110,8 +110,8 @@ export default class InvoicesScene extends BaseScene<{}> {
                   <Text style={stylesTitle}>Račun: {item.InvoiceNumber}</Text>
                   <View style={stylesDetails}>
                     <Text style={stylesDetailsInfo}>{item.Amount}kn</Text>
-                    <Text style={stylesDetailsInfo}>{Moment(item.DueDate).format('DD.MM.YYYY.')}</Text>
-                    <Text style={stylesDetailsInfo}>{item.DeliveryChannel}</Text>
+                    <Text style={stylesInfo}>{Moment(item.Created).format('DD.MM.YYYY.')}</Text>
+                    <Text style={stylesInfo}>{item.TypeName}</Text>
                   </View>
                 </View>
               </View>

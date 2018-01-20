@@ -29,7 +29,8 @@ export default class UserSettingsScene extends BaseScene<{}> {
       newPassword: '',
       repeatPassword: '',
       showUserDataModal: false,
-      showPasswordModal: false
+      showPasswordModal: false,
+      status: false
     };
   }
 

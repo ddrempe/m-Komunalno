@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  Text
+  Text,
+  BackHandler
 } from 'react-native';
 import {
   Button
@@ -12,6 +13,10 @@ import BaseScene from './baseScene';
 export default class NoConnectionScene extends BaseScene<{}> {
   checkInternetConnection() {
     this.refreshOnConnected();
+  }
+
+  onBackPress() {
+    BackHandler.exitApp();
   }
 
   render() {
