@@ -110,8 +110,8 @@ export default class InvoicesScene extends BaseScene<{}> {
                   <Text style={stylesTitle}>Račun: {item.InvoiceNumber}</Text>
                   <View style={stylesDetails}>
                     <Text style={stylesDetailsInfo}>{item.Amount}kn</Text>
-                    <Text style={stylesInfo}>{Moment(item.Created).format('DD.MM.YYYY.')}</Text>
-                    <Text style={stylesInfo}>{item.TypeName}</Text>
+                    <Text style={stylesDetailsInfo}>{Moment(item.Created).format('DD.MM.YYYY.')}</Text>
+                    <Text style={stylesDetailsInfo}>{item.TypeName}</Text>
                   </View>
                 </View>
               </View>
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingTop: 10,
-    width: 170
+    width: 200
   },
   detailsInfo: {
     color: 'gray',
