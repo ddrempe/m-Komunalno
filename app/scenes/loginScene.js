@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  Alert,
-  NetInfo,
   Text,
-  Keyboard
+  NetInfo,
+  Keyboard,
+  BackHandler,
+  Alert
 } from 'react-native';
 import {
   Input,
@@ -13,6 +14,7 @@ import {
   Spinner
 } from 'nachos-ui';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Settings from '../../settings';
 import UserRequest from '../network/userRequest';
 import BaseScene from './baseScene';
 
@@ -22,15 +24,15 @@ export default class LoginScene extends BaseScene<{}> {
     this.state = {
       username: '',
       password: '',
-      state: false
+      spinner: false
     };
   }
 
   onSubmit = () => {
-    if (!this.state.status) {
-      this.setState({status: true});
+    if (!this.state.spinner) {
+      this.setState({spinner: true});
     };
-    NetInfo.isConnected.fetch().then((isConnected) => {
+    NetInfo.getConnectionInfo().then((isConnected) => {
       if (isConnected) {
         UserRequest.login(this.state.username, this.state.password)
           .then(() => this.onLoginSuccess())
@@ -46,35 +48,35 @@ export default class LoginScene extends BaseScene<{}> {
   }
 
   onLoginSuccess() {
-    if (this.state.status) {
-      this.setState({status: false});
+    if (this.state.spinner) {
+      this.setState({spinner: false});
     };
     Keyboard.dismiss();
+    Settings.fetchAll(this.onSettingsLoad.bind(this));
+  }
+
+  onSettingsLoad() {
     this.goto('MainScene');
   }
 
   onLoginFail(error) {
-    if (this.state.status) {
-      this.setState({status: false});
+    if (this.state.spinner) {
+      this.setState({spinner: false});
     };
-
-    //console.log(error);
-    //Ovo se trenutno događa zapravo sa pogrešnim korisničkim imenom ili lozinkom kod prijave
-    //Zasad nije jasan način razlikovanja odgovora od web servisa da li se dogodila greška
-    //prilikom provjere na serveru ili se radi o pogrešnim korisničkim podacima
-    //TODO - napraviti kada dobijemo pristup backendu
-
+    //TODO: extract error message from web API response
     Alert.alert(
       'Neuspješna prijava!',
-      'Prijava nije moguća zbog tehničkih problema.',
+      'Prijava nije moguća.',
       [{ text: 'U redu' }]
     );
+  }
 
-    // Alert.alert(
-    //   'Neuspješna prijava!', 
-    //   'Neispravno korisničko ime i/ili lozinka', 
-    //   [{ text: 'U redu' }]
-    // );
+  onBackPress() {
+    BackHandler.exitApp();
+  }
+
+  componentDidMount() {
+    NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectionChange);
   }
 
   render() {
@@ -128,9 +130,9 @@ export default class LoginScene extends BaseScene<{}> {
           </Button>
         </View>
         <View style={stylesProgressBar}>
-          { this.state.status ? <Spinner color='#70B5E5'/> : null }
+          {this.state.spinner ? <Spinner color='#70B5E5'/> : null}
           <View style={stylesTextProgressBar}>
-            { this.state.status ? <Text>Provjera podataka</Text> : null } 
+            {this.state.spinner ? <Text>Provjera podataka...</Text> : null} 
           </View>
         </View>
       </View>
@@ -143,8 +145,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E4E4E4',
     justifyContent: 'center',
     flex: 1,
-    paddingRight: 12,
-    paddingLeft: 12
+    padding: 12
   },
   row: {
     flexDirection: 'row',

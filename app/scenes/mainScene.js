@@ -6,17 +6,21 @@ import {
   TouchableHighlight,
   Image,
   Text,
-  Button,
-  Dimensions,
-  Alert
+  BackHandler,
+  Dimensions
 } from 'react-native';
+import {
+  Button
+} from 'nachos-ui';
+import ActionBar from '../components/actionBar';
 import UserRequest from '../network/userRequest';
+import BaseScene from './baseScene';
 
-export default class MainScene extends Component<{}> {
+export default class MainScene extends BaseScene<{}> {
   constructor(props) {
     super(props);
     this.state = {
-      view: 'Grid View',
+      view: 'Prikaži kao listu',
       columns: 2,
       key: 1,
       tiles: []
@@ -25,15 +29,18 @@ export default class MainScene extends Component<{}> {
 
   onToggle() {
     if (this.state.columns != 2) {
-      this.setState({view: 'Grid View', columns: 2, key: 1});
+      this.setState({view: 'Prikaži kao listu', columns: 2, key: 1});
     } else {
-      this.setState({view: 'List View', columns: 1, key: 2});
+      this.setState({view: 'Prikaži kao polje', columns: 1, key: 2});
     };
   }
 
-  onTileClick() {
-    Alert.alert('Tile Click');
-    //TODO: change scene on click
+  onTileClick(item) {
+    this.goto(item.Scene, {title: item.title});
+  }
+
+  onBackPress() {
+    BackHandler.exitApp();
   }
 
   componentDidMount() {
@@ -44,12 +51,24 @@ export default class MainScene extends Component<{}> {
   render() {
     return (
       <View style={stylesContainer}>
-        <Button
-          color='#70B5E5'
-          title={this.state.view}
-          onPress={this.onToggle.bind(this)}
-        >
-        </Button>
+        <ActionBar
+          title='Izbornik'
+          onLeftPress={() => this.onBackPress()}
+          onRightPress={() => this.logout()}
+        />
+        <View style={stylesButtonChangeWrapper}>
+          <Button
+            style={stylesButtonChange}
+            kind='squared'
+            iconSize={20}
+            iconPosition='left'
+            iconName={this.state.key != 2 ? 'md-list' : 'md-grid'}
+            uppercase={false}
+            children={this.state.view}
+            onPress={this.onToggle.bind(this)}
+          >
+          </Button>
+        </View>
         <FlatList
           contentContainerStyle={stylesFlatList}
           key={this.state.key}
@@ -59,13 +78,14 @@ export default class MainScene extends Component<{}> {
           renderItem={({item}) => (
             <TouchableHighlight
               underlayColor='black'
-              onPress={this.onTileClick}
+              onPress={() => this.onTileClick(item)}
             >
               <View style={this.state.key != 2 ? stylesTileGrid : stylesTileList}>
-                <View style={{alignItems: 'center'}}>
+                <View style={stylesImageWrapper}>
                   <Image
                     style={stylesImage}
-                    source={item.IconUrl}
+                    resizeMode='contain'
+                    source={{uri: 'https://raw.githubusercontent.com/ddrempe/m-Komunalno/master/icons/' + item.IconUrl + '.png'}}
                   />
                 </View>
                 <View style={this.state.key != 2 ? stylesTextGrid : stylesTextList}>
@@ -86,6 +106,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#E4E4E4',
     flex: 1
   },
+  buttonChangeWrapper: {
+    marginBottom: 46
+  },
+  buttonChange: {
+    backgroundColor: '#70B5E5',
+    height: 46
+  },
   flatList: {
     margin: 2
   },
@@ -101,6 +128,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     margin: 2,
     padding: 10
+  },
+  imageWrapper: {
+    alignItems: 'center'
   },
   image: {
     height: 72,
@@ -123,9 +153,12 @@ const styles = StyleSheet.create({
 });
 
 var stylesContainer = StyleSheet.flatten([styles.container]);
+var stylesButtonChangeWrapper = StyleSheet.flatten([styles.buttonChangeWrapper]);
+var stylesButtonChange = StyleSheet.flatten([styles.buttonChange]);
 var stylesFlatList = StyleSheet.flatten([styles.flatList]);
 var stylesTileGrid = StyleSheet.flatten([styles.tileGrid]);
 var stylesTileList = StyleSheet.flatten([styles.tileList]);
+var stylesImageWrapper = StyleSheet.flatten([styles.imageWrapper]);
 var stylesImage = StyleSheet.flatten([styles.image]);
 var stylesTextGrid = StyleSheet.flatten([styles.textGrid]);
 var stylesTextList = StyleSheet.flatten([styles.textList]);
