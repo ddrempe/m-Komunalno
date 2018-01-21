@@ -1,4 +1,5 @@
 import Settings from '../../settings';
+import RNFetchBlob from 'react-native-fetch-blob';
 
 export default class BaseRequest {
     async fetch(options, path) {
@@ -70,5 +71,34 @@ export default class BaseRequest {
         };
 
         return url;
+    }
+
+    async download(options, path, fileName) {
+        var authHeader = await Settings.getAuthHeader();
+        
+        options = {
+            'Cookie': '.ASPXAUTH=' + authHeader
+        };
+
+        var url = global.settings.PORTAL_URL + path;
+
+
+        const documentDir = RNFetchBlob.fs.dirs.DocumentDir;
+
+        return RNFetchBlob.fetch('GET', url, options)
+            .then((response) => {
+                var base64 = response.data;
+                // var base64 = RNFetchBlob.base64.encode('foo');
+
+                var pdfLocation = documentDir + '/' + fileName;
+
+                RNFetchBlob.fs.writeFile(pdfLocation, base64, 'base64');
+
+                return pdfLocation;
+            })
+            .catch((error) => {
+                //TODO: error handling
+                alert('Neuspjelo preuzimanje PDF-a');
+            });
     }
 }

@@ -36,7 +36,7 @@ export default class MainScene extends BaseScene<{}> {
   }
 
   onTileClick(item) {
-    this.goto(item.Scene, {title: item.title});
+    this.goto(item.Scene);
   }
 
   onBackPress() {

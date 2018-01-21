@@ -40,7 +40,7 @@ export default class MessagesScene extends BaseScene<{}> {
   }
 
   closeMessageDetailModal(){
-    this.setState({ showMessageDetailModal: false, modalItem: [] });
+    this.setState({showMessageDetailModal: false, modalItem: []});
   }
 
   componentDidMount() {
@@ -124,12 +124,12 @@ const styles = StyleSheet.create({
     margin: 2
   },
   tile: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#E2F0F9',
     margin: 2,
     padding: 10
   },
   tileRead: {
-    backgroundColor: '#D6DBE0',
+    backgroundColor: '#F1F1F1',
     margin: 2,
     padding: 10
   },

@@ -15,7 +15,7 @@ export default class SplashScene extends BaseScene<{}> {
     super(props);
     InteractionManager.runAfterInteractions(() => {
       Settings.fetchAll(this.onSettingsLoad.bind(this))
-        .catch(() => this.goto('NoConnectionScene', {title: 'NoConnectionScene'}));
+        .catch(() => this.goto('NoConnectionScene'));
     });
   }
 

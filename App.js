@@ -9,6 +9,7 @@ import InvoicesScene from './app/scenes/invoicesScene';
 import UserSettingsScene from './app/scenes/userSettingsScene';
 import MessagesScene from './app/scenes/messagesScene';
 import NoConnectionScene from './app/scenes/noConnectionScene';
+import PdfViewScene from './app/scenes/pdfViewScene';
 
 export default class App extends Component<{}> {
   render() {
@@ -27,6 +28,7 @@ const AppNavigator = StackNavigator(
     UserSettingsScene: {screen: UserSettingsScene},
     MessagesScene: {screen: MessagesScene},
     NoConnectionScene: {screen: NoConnectionScene},
+    PdfViewScene: {screen: PdfViewScene}
   },
   {
     initialRouteName: 'LoginScene',

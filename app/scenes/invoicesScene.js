@@ -6,12 +6,11 @@ import {
   FlatList,
   Image,
   Text,
-  TouchableOpacity,
-  Alert
+  TouchableOpacity
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import ActionBar from '../components/actionBar';
 import Moment from 'moment';
+import ActionBar from '../components/actionBar';
 import InvoicesRequest from '../network/invoicesRequest';
 import BaseScene from './baseScene';
 
@@ -56,11 +55,17 @@ export default class InvoicesScene extends BaseScene<{}> {
   }
 
   onPdfIconClick(item) {
-    Alert.alert('Dokument', JSON.stringify(item));
+    InvoicesRequest.downloadInvoice(item.HashKey)
+      .then((response) => this.goto('PdfViewScene', {
+        url: response,
+        title: item.DisplayPeriod,
+        refererScene: 'InvoicesScene',
+        refererParams: this.props.navigation.state.params
+      }));
   }
 
   updateInvoiceTypeSelected = (newInvoiceTypeSelected) => {
-    this.setState({ invoiceTypeSelected: newInvoiceTypeSelected });
+    this.setState({invoiceTypeSelected: newInvoiceTypeSelected});
 
     InvoicesRequest.getInvoicesByType(newInvoiceTypeSelected)
       .then((response) => this.setState({invoices: response}));

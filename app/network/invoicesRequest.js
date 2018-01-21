@@ -24,6 +24,16 @@ class InvoicesRequest extends BaseRequest {
 
         return this.get(options, path);
     }
+
+    downloadInvoice(hashKey) {
+        var options = {};
+
+        var path = '/racuni/preuzmi/' + hashKey;
+        
+        var fileName = hashKey + '.pdf';
+        
+        return this.download(options, path, fileName);
+    }
 }
 
 let invoicesRequest = new InvoicesRequest();
