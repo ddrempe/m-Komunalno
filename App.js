@@ -29,7 +29,7 @@ const AppNavigator = StackNavigator(
     NoConnectionScene: {screen: NoConnectionScene},
   },
   {
-    initialRouteName: 'SplashScene',
+    initialRouteName: 'LoginScene',
     headerMode: 'none'
   }
 );

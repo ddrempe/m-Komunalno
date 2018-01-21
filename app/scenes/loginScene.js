@@ -66,7 +66,7 @@ export default class LoginScene extends BaseScene<{}> {
     //TODO: extract error message from web API response
     Alert.alert(
       'Neuspješna prijava!',
-      'Prijava nije moguća zbog tehničkih problema.',
+      'Prijava nije moguća.',
       [{ text: 'U redu' }]
     );
   }

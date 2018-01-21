@@ -37,7 +37,7 @@ export default class SplashScene extends BaseScene<{}> {
         <Image
           style={stylesLogo}
           resizeMode='contain'
-          source={{uri: 'https://raw.githubusercontent.com/ddrempe/m-Komunalno/test/icons/logo.png'}}
+          source={{uri: 'https://raw.githubusercontent.com/ddrempe/m-Komunalno/master/icons/logo.png'}}
         />
       </View>
     );
