@@ -13,8 +13,8 @@ import {
   Button
 } from 'nachos-ui';
 import ActionBar from '../components/actionBar';
-import GridItem from '../components/gridItem';
-import ListItem from '../components/listItem';
+import ListFlatList from '../components/listFlatList';
+import GridFlatList from '../components/gridFlatList';
 import UserRequest from '../network/userRequest';
 import BaseScene from './baseScene';
 
@@ -23,7 +23,6 @@ export default class MainScene extends BaseScene<{}> {
     super(props);
     this.state = {
       view: 'Prikaži kao listu',
-      columns: 2,
       key: 1,
       tiles: []
     };
@@ -31,9 +30,9 @@ export default class MainScene extends BaseScene<{}> {
 
   onToggle() {
     if (this.state.columns != 2) {
-      this.setState({view: 'Prikaži kao listu', columns: 2, key: 1});
+      this.setState({view: 'Prikaži kao listu', key: 1});
     } else {
-      this.setState({view: 'Prikaži kao polje', columns: 1, key: 2});
+      this.setState({view: 'Prikaži kao polje', key: 2});
     };
   }
 
@@ -70,35 +69,17 @@ export default class MainScene extends BaseScene<{}> {
             onPress={this.onToggle.bind(this)}
           >
           </Button>
+          <View>
+            {
+              this.state.key == 1
+              ?
+              <ListFlatList data={this.state.tiles} onPress={() => this.onTileClick(scene)}/>
+              :
+              <GridFlatList data={this.state.tiles} onPress={() => this.onTileClick(scene)}/>
+            }
+          </View>
         </View>
-        <FlatList
-          contentContainerStyle={stylesFlatList}
-          key={this.state.key}
-          numColumns={this.state.columns}
-          data={this.state.tiles}
-          keyExtractor={(item, index) => (item.Id)}
-          renderItem={({item}) => (
-            <View>
-              {
-                this.state.key == 1
-                ?
-                <GridItem
-                  iconUrl={item.IconUrl}
-                  name={item.Name}
-                  description={item.Description}
-                  onPress={() => this.onTileClick(item.Scene)}
-                />
-                :
-                <ListItem
-                  iconUrl={item.IconUrl}
-                  name={item.Name}
-                  description={item.Description}
-                  onPress={() => this.onTileClick(item.Scene)}
-                />
-              }
-            </View>
-          )}
-        />
+        
       </View>
     );
   }
@@ -115,13 +96,9 @@ const styles = StyleSheet.create({
   buttonChange: {
     backgroundColor: '#70B5E5',
     height: 46
-  },
-  flatList: {
-    margin: 2
   }
 });
 
 var stylesContainer = StyleSheet.flatten([styles.container]);
 var stylesButtonChangeWrapper = StyleSheet.flatten([styles.buttonChangeWrapper]);
 var stylesButtonChange = StyleSheet.flatten([styles.buttonChange]);
-var stylesFlatList = StyleSheet.flatten([styles.flatList]);
