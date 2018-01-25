@@ -10,12 +10,15 @@ import {
 } from 'react-native';
 
 export default class GridFlatList extends Component<{}> {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return (
       <View style={stylesContainer}>
         <FlatList
           contentContainerStyle={stylesFlatList}
-          key={1}
           numColumns={2}
           data={this.props.data}
           keyExtractor={(item, index) => (item.Id)}

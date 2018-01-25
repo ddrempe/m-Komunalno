@@ -5,18 +5,20 @@ import {
   FlatList,
   TouchableHighlight,
   Image,
-  Text,
-  Dimensions
+  Text
 } from 'react-native';
 
 export default class ListFlatList extends Component<{}> {
+  constructor(props) {
+    super(props);
+  }
+  
   render() {
     return (
       <View style={stylesContainer}>
         <FlatList
           contentContainerStyle={stylesFlatList}
-          key={1}
-          numColumns={2}
+          numColumns={1}
           data={this.props.data}
           keyExtractor={(item, index) => (item.Id)}
           renderItem={({item}) => (

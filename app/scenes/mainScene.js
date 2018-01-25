@@ -2,12 +2,7 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  FlatList,
-  TouchableHighlight,
-  Image,
-  Text,
-  BackHandler,
-  Dimensions
+  BackHandler
 } from 'react-native';
 import {
   Button
@@ -29,7 +24,7 @@ export default class MainScene extends BaseScene<{}> {
   }
 
   onToggle() {
-    if (this.state.columns != 2) {
+    if (this.state.key != 1) {
       this.setState({view: 'Prikaži kao listu', key: 1});
     } else {
       this.setState({view: 'Prikaži kao polje', key: 2});
@@ -69,17 +64,16 @@ export default class MainScene extends BaseScene<{}> {
             onPress={this.onToggle.bind(this)}
           >
           </Button>
-          <View>
-            {
-              this.state.key == 1
-              ?
-              <ListFlatList data={this.state.tiles} onPress={() => this.onTileClick(scene)}/>
-              :
-              <GridFlatList data={this.state.tiles} onPress={() => this.onTileClick(scene)}/>
-            }
-          </View>
         </View>
-        
+        <View style={{flex: 1}}>
+        {
+          this.state.key == 1
+          ?
+          <GridFlatList data={this.state.tiles} onPress={(scene) => this.onTileClick(scene)}/>
+          :
+          <ListFlatList data={this.state.tiles} onPress={(scene) => this.onTileClick(scene)}/>
+        }
+        </View>
       </View>
     );
   }
